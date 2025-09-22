@@ -16,7 +16,8 @@ namespace OpenQuestPDF.Drawing
         
         public void Translate(Position vector)
         {
-            Canvas!.Translate(vector.X, vector.Y);
+            if (Canvas == null) return;
+            Canvas.Translate(vector.X, vector.Y);
         }
 
         public void DrawRectangle(Position vector, Size size, string color)
@@ -24,43 +25,51 @@ namespace OpenQuestPDF.Drawing
             if (size.Width < Size.Epsilon || size.Height < Size.Epsilon)
                 return;
 
+            if (Canvas == null) return;
             var paint = color.ColorToPaint();
-            Canvas!.DrawRect(vector.X, vector.Y, size.Width, size.Height, paint);
+            Canvas.DrawRect(vector.X, vector.Y, size.Width, size.Height, paint);
         }
 
         public void DrawText(SKTextBlob skTextBlob, Position position, TextStyle style)
         {
-            Canvas!.DrawText(skTextBlob, position.X, position.Y, style.ToPaint());
+            if (Canvas == null) return;
+            Canvas.DrawText(skTextBlob, position.X, position.Y, style.ToPaint());
         }
 
         public void DrawImage(SKImage image, Position vector, Size size)
         {
-            Canvas!.DrawImage(image, new SKRect(vector.X, vector.Y, size.Width, size.Height));
+            if (Canvas == null) return;
+            Canvas.DrawImage(image, new SKRect(vector.X, vector.Y, size.Width, size.Height));
         }
 
         public void DrawHyperlink(string url, Size size)
         {
-            Canvas!.DrawUrlAnnotation(new SKRect(0, 0, size.Width, size.Height), url);
+            if (Canvas == null) return;
+            Canvas.DrawUrlAnnotation(new SKRect(0, 0, size.Width, size.Height), url);
         }
         
         public void DrawSectionLink(string sectionName, Size size)
         {
-            Canvas!.DrawLinkDestinationAnnotation(new SKRect(0, 0, size.Width, size.Height), sectionName);
+            if (Canvas == null) return;
+            Canvas.DrawLinkDestinationAnnotation(new SKRect(0, 0, size.Width, size.Height), sectionName);
         }
 
         public void DrawSection(string sectionName)
         {
-            Canvas!.DrawNamedDestinationAnnotation(new SKPoint(0, 0), sectionName);
+            if (Canvas == null) return;
+            Canvas.DrawNamedDestinationAnnotation(new SKPoint(0, 0), sectionName);
         }
 
         public void Rotate(float angle)
         {
-            Canvas!.RotateDegrees(angle);
+            if (Canvas == null) return;
+            Canvas.RotateDegrees(angle);
         }
 
         public void Scale(float scaleX, float scaleY)
         {
-            Canvas!.Scale(scaleX, scaleY);
+            if (Canvas == null) return;
+            Canvas.Scale(scaleX, scaleY);
         }
     }
 }

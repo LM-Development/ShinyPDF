@@ -195,7 +195,7 @@ namespace OpenQuestPDF.Elements.Table
                 
                 var cellsToTry = Enumerable
                     .Range(CurrentRow, MaxRow - CurrentRow + 1)
-                    .SelectMany(x => CellsCache![x]);
+                    .SelectMany(x => CellsCache?[x] ?? Array.Empty<TableCell>());
                 
                 var currentRow = CurrentRow;
                 var maxRenderingRow = RowsCount;

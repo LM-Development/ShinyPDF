@@ -34,19 +34,23 @@ namespace OpenQuestPDF.Drawing
             var imageInfo = new SKImageInfo((int) (size.Width * scalingFactor), (int) (size.Height * scalingFactor));
             
             Surface = SKSurface.Create(imageInfo);
-            Canvas = Surface!.Canvas;
+            if (Surface != null)
+                Canvas = Surface.Canvas;
             
-            Canvas.Scale(scalingFactor);
+            Canvas?.Scale(scalingFactor);
         }
 
         public override void EndPage()
         {
-            Canvas!.Save();
-            var image = Surface!.Snapshot().Encode(SKEncodedImageFormat.Png, 100).ToArray();
-            Images.Add(image);
+            Canvas?.Save();
+            if (Surface != null)
+            {
+                var image = Surface.Snapshot().Encode(SKEncodedImageFormat.Png, 100).ToArray();
+                Images.Add(image);
+            }
             
-            Canvas.Dispose();
-            Surface.Dispose();
+            Canvas?.Dispose();
+            Surface?.Dispose();
         }
     }
 }
