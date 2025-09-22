@@ -158,8 +158,8 @@ class InteractiveCanvas : ICustomDrawOperation
     {
         ImageFilter = SKImageFilter.CreateBlendMode(
             SKBlendMode.Overlay, 
-            SKImageFilter.CreateDropShadowOnly(0, 6, 6, 6, SKColors.Black.WithAlpha(64)),
-            SKImageFilter.CreateDropShadowOnly(0, 10, 14, 14, SKColors.Black.WithAlpha(32)))
+            SKImageFilter.CreateDropShadow(0, 6, 6, 6, SKColors.Black.WithAlpha(64), null, null),
+            SKImageFilter.CreateDropShadow(0, 10, 14, 14, SKColors.Black.WithAlpha(32), null, null))
     };
     
     private void DrawBlankPage(SKCanvas canvas, float width, float height)
