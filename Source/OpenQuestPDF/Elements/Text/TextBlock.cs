@@ -146,7 +146,7 @@ namespace OpenQuestPDF.Elements.Text
             var lastElementMeasurement = lines.Last().Elements.Last().Measurement;
             CurrentElementIndex = lastElementMeasurement.IsLast ? 0 : lastElementMeasurement.NextIndex;
             
-            if (!RenderingQueue.Any())
+            if (RenderingQueue == null || !RenderingQueue.Any())
                 ResetState();
             
             float GetAlignmentOffset(float lineWidth)
@@ -165,7 +165,7 @@ namespace OpenQuestPDF.Elements.Text
 
         public IEnumerable<TextLine> DivideTextItemsIntoLines(float availableWidth, float availableHeight)
         {
-            var queue = new Queue<ITextBlockItem>(RenderingQueue);
+            var queue = new Queue<ITextBlockItem>(RenderingQueue ?? new Queue<ITextBlockItem>());
             var currentItemIndex = CurrentElementIndex;
             var currentHeight = 0f;
 

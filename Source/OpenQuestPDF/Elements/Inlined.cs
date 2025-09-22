@@ -31,7 +31,7 @@ namespace OpenQuestPDF.Elements
         public ContentDirection ContentDirection { get; set; }
         
         public List<InlinedElement> Elements { get; internal set; } = new List<InlinedElement>();
-        private Queue<InlinedElement> ChildrenQueue { get; set; }
+        private Queue<InlinedElement>? ChildrenQueue { get; set; }
 
         internal float VerticalSpacing { get; set; }
         internal float HorizontalSpacing { get; set; }
@@ -53,7 +53,7 @@ namespace OpenQuestPDF.Elements
         {
             SetDefaultAlignment();   
             
-            if (!ChildrenQueue.Any())
+            if (ChildrenQueue == null || !ChildrenQueue.Any())
                 return SpacePlan.FullRender(Size.Zero);
             
             var lines = Compose(availableSpace);
@@ -75,7 +75,7 @@ namespace OpenQuestPDF.Elements
             var height = lineSizes.Sum(x => x.Height) + (lines.Count - 1) * VerticalSpacing;
             var targetSize = new Size(width, height);
 
-            var isPartiallyRendered = lines.Sum(x => x.Count) != ChildrenQueue.Count;
+            var isPartiallyRendered = lines.Sum(x => x.Count) != (ChildrenQueue?.Count ?? 0);
 
             if (isPartiallyRendered)
                 return SpacePlan.PartialRender(targetSize);
@@ -101,9 +101,9 @@ namespace OpenQuestPDF.Elements
             }
             
             Canvas.Translate(new Position(0, -topOffset));
-            lines.SelectMany(x => x).ToList().ForEach(x => ChildrenQueue.Dequeue());
+            lines.SelectMany(x => x).ToList().ForEach(x => ChildrenQueue!.Dequeue());
             
-            if (!ChildrenQueue.Any())
+            if (ChildrenQueue == null || !ChildrenQueue.Any())
                 ResetState();
 
             void DrawLine(ICollection<InlinedMeasurement> lineMeasurements)
@@ -197,7 +197,7 @@ namespace OpenQuestPDF.Elements
         // list of lines, each line is a list of elements
         private ICollection<ICollection<InlinedMeasurement>> Compose(Size availableSize)
         {
-            var queue = new Queue<InlinedElement>(ChildrenQueue);
+            var queue = new Queue<InlinedElement>(ChildrenQueue ?? new Queue<InlinedElement>());
             var result = new List<ICollection<InlinedMeasurement>>();
 
             var topOffset = 0f;

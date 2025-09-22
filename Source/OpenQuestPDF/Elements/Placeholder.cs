@@ -6,7 +6,7 @@ namespace OpenQuestPDF.Elements
 {
     internal class Placeholder : IComponent
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
         private static readonly byte[] ImageData;
 
         static Placeholder()
