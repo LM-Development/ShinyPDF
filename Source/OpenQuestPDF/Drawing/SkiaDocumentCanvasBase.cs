@@ -27,19 +27,19 @@ namespace OpenQuestPDF.Drawing
         {
             Canvas?.Dispose();
             
-            Document.Close();
+            Document!.Close();
             Document.Dispose();
         }
 
         public override void BeginPage(Size size)
         {
-            Canvas = Document.BeginPage(size.Width, size.Height);
+            Canvas = Document!.BeginPage(size.Width, size.Height);
         }
 
         public override void EndPage()
         {
-            Document.EndPage();
-            Canvas.Dispose();
+            Document!.EndPage();
+            Canvas!.Dispose();
         }
     }
 }

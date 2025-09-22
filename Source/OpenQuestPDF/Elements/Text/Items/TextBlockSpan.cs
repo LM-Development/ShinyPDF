@@ -13,7 +13,7 @@ namespace OpenQuestPDF.Elements.Text.Items
 {
     internal class TextBlockSpan : ITextBlockItem
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
         public TextStyle Style { get; set; } = TextStyle.Default;
         private TextShapingResult? TextShapingResult { get; set; }
         private ushort? SpaceCodepoint { get; set; }

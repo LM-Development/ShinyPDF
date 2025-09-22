@@ -36,7 +36,7 @@ namespace OpenQuestPDF.Fluent
         internal TextPageNumberDescriptor(Action<TextStyle> assignTextStyle, Action<PageNumberFormatter> assignFormatFunction) : base(assignTextStyle)
         {
             AssignFormatFunction = assignFormatFunction;
-            AssignFormatFunction(x => x?.ToString());
+            AssignFormatFunction(x => x?.ToString() ?? string.Empty);
         }
 
         public TextPageNumberDescriptor Format(PageNumberFormatter formatter)

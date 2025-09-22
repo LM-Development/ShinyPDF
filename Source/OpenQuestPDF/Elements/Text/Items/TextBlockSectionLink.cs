@@ -5,7 +5,7 @@ namespace OpenQuestPDF.Elements.Text.Items
 {
     internal class TextBlockSectionLink : TextBlockSpan
     {
-        public string SectionName { get; set; }
+        public string SectionName { get; set; } = string.Empty;
         
         public override TextMeasurementResult? Measure(TextMeasurementRequest request)
         {

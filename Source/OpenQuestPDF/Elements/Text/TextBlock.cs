@@ -17,7 +17,7 @@ namespace OpenQuestPDF.Elements.Text
 
         public string Text => string.Join(" ", Items.OfType<TextBlockSpan>().Select(x => x.Text));
 
-        private Queue<ITextBlockItem> RenderingQueue { get; set; }
+        private Queue<ITextBlockItem>? RenderingQueue { get; set; }
         private int CurrentElementIndex { get; set; }
 
         private bool FontFallbackApplied { get; set; } = false;

@@ -11,8 +11,8 @@ namespace OpenQuestPDF.Drawing.Proxy
 {
     internal class DebuggingState
     {
-        private DebugStackItem Root { get; set; }
-        private Stack<DebugStackItem> Stack { get; set; }
+        private DebugStackItem? Root { get; set; }
+        private Stack<DebugStackItem> Stack { get; set; } = new Stack<DebugStackItem>();
 
         public DebuggingState()
         {

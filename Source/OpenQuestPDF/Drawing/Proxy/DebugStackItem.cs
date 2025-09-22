@@ -5,7 +5,7 @@ namespace OpenQuestPDF.Drawing.Proxy
 {
     public class DebugStackItem
     {
-        public IElement Element { get; internal set; }
+        public IElement Element { get; set; } = null!;
         public Size AvailableSpace { get; internal set; }
         public SpacePlan SpacePlan { get; internal set; }
 
