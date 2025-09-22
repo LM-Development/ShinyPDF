@@ -67,7 +67,7 @@ namespace OpenQuestPDF.Elements.Text
         {
             SetDefaultAlignment();
             
-            if (!RenderingQueue.Any())
+            if (RenderingQueue == null || !RenderingQueue.Any())
                 return SpacePlan.FullRender(Size.Zero);
             
             var lines = DivideTextItemsIntoLines(availableSpace.Width, availableSpace.Height).ToList();
@@ -141,7 +141,7 @@ namespace OpenQuestPDF.Elements.Text
                 .Where(x => x.Any(y => y.Measurement.IsLast))
                 .Select(x => x.Key)
                 .ToList()
-                .ForEach(x => RenderingQueue.Dequeue());
+                .ForEach(x => RenderingQueue!.Dequeue());
 
             var lastElementMeasurement = lines.Last().Elements.Last().Measurement;
             CurrentElementIndex = lastElementMeasurement.IsLast ? 0 : lastElementMeasurement.NextIndex;

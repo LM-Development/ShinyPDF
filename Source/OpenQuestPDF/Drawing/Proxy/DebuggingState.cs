@@ -62,7 +62,8 @@ namespace OpenQuestPDF.Drawing.Proxy
             var builder = new StringBuilder();
             var nestingLevel = 0;
 
-            Traverse(Root);
+            if (Root != null)
+                Traverse(Root);
             return builder.ToString();
 
             void Traverse(DebugStackItem item)
@@ -113,7 +114,7 @@ namespace OpenQuestPDF.Drawing.Proxy
                     .Where(x => !(x.Value is TextStyle))
                     .Select(x => $"{x.Property}: {FormatValue(x.Value)}");
 
-                string FormatValue(object value)
+                string FormatValue(object? value)
                 {
                     const int maxLength = 100;
                     

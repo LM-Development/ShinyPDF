@@ -8,7 +8,7 @@ namespace OpenQuestPDF.Previewer
 {
     internal class PreviewerRefreshCommand
     {
-        public ICollection<Page> Pages { get; set; }
+        public ICollection<Page> Pages { get; set; } = new List<Page>();
 
         public class Page
         {
