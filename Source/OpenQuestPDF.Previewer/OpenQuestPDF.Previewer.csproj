@@ -45,4 +45,8 @@
         <PackageReference Include="System.Reactive" Version="6.0.2" />
         <PackageReference Include="SkiaSharp" Version="3.119.0" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\OpenQuestPDF\OpenQuestPDF.csproj" />
+    </ItemGroup>
 </Project>

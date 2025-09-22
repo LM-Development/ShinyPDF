@@ -117,69 +117,67 @@ namespace OpenQuestPDF.Drawing
                 return new SKPaint
                 {
                     Color = SKColor.Parse(style.Color),
-                    Typeface = GetTypeface(style),
-                    TextSize = (style.Size ?? 12) * GetTextScale(style),
                     IsAntialias = true,
-                };
-            }
-
-            static SKTypeface GetTypeface(TextStyle style)
-            {
-                var weight = (SKFontStyleWeight)(style.FontWeight ?? FontWeight.Normal);
-
-                // superscript and subscript use slightly bolder font to match visually line thickness
-                if (style.FontPosition is FontPosition.Superscript or FontPosition.Subscript)
-                {
-                    var weightValue = (int)weight;
-                    weightValue = Math.Min(weightValue + 100, 1000);
-                    
-                    weight = (SKFontStyleWeight) (weightValue);
-                }
-
-                var slant = (style.IsItalic ?? false) ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright;
-
-                var fontStyle = new SKFontStyle(weight, SKFontStyleWidth.Normal, slant);
-
-                if (StyleSets.TryGetValue(style.FontFamily, out var fontStyleSet))
-                    return fontStyleSet.Match(fontStyle);
-
-                var fontFromDefaultSource = SKFontManager.Default.MatchFamily(style.FontFamily, fontStyle);
-                
-                if (fontFromDefaultSource != null)
-                    return fontFromDefaultSource;
-
-                var availableFontNames = string.Join(", ", SKFontManager.Default.GetFontFamilies());
-                
-                throw new ArgumentException(
-                    $"The typeface '{style.FontFamily}' could not be found. " +
-                    $"Please consider the following options: " +
-                    $"1) install the font on your operating system or execution environment. " +
-                    $"2) load a font file specifically for QuestPDF usage via the OpenQuestPDF.Drawing.FontManager.RegisterFontType(Stream fileContentStream) static method. " +
-                    $"Available font family names: [{availableFontNames}]");
-            }
-            
-            static float GetTextScale(TextStyle style)
-            {
-                return style.FontPosition switch
-                {
-                    FontPosition.Normal => 1f,
-                    FontPosition.Subscript => 0.625f,
-                    FontPosition.Superscript => 0.625f,
-                    _ => throw new ArgumentOutOfRangeException()
                 };
             }
         }
 
+        private static SKTypeface GetTypeface(TextStyle style)
+        {
+            var weight = (SKFontStyleWeight)(style.FontWeight ?? FontWeight.Normal);
+
+            // superscript and subscript use slightly bolder font to match visually line thickness
+            if (style.FontPosition is FontPosition.Superscript or FontPosition.Subscript)
+            {
+                var weightValue = (int)weight;
+                weightValue = Math.Min(weightValue + 100, 1000);
+                
+                weight = (SKFontStyleWeight) (weightValue);
+            }
+
+            var slant = (style.IsItalic ?? false) ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright;
+
+            var fontStyle = new SKFontStyle(weight, SKFontStyleWidth.Normal, slant);
+
+            if (StyleSets.TryGetValue(style.FontFamily, out var fontStyleSet))
+                return fontStyleSet.Match(fontStyle);
+
+            var fontFromDefaultSource = SKFontManager.Default.MatchFamily(style.FontFamily, fontStyle);
+            
+            if (fontFromDefaultSource != null)
+                return fontFromDefaultSource;
+
+            var availableFontNames = string.Join(", ", SKFontManager.Default.GetFontFamilies());
+            
+            throw new ArgumentException(
+                $"The typeface '{style.FontFamily}' could not be found. " +
+                $"Please consider the following options: " +
+                $"1) install the font on your operating system or execution environment. " +
+                $"2) load a font file specifically for QuestPDF usage via the OpenQuestPDF.Drawing.FontManager.RegisterFontType(Stream fileContentStream) static method. " +
+                $"Available font family names: [{availableFontNames}]");
+        }
+        
+        private static float GetTextScale(TextStyle style)
+        {
+            return style.FontPosition switch
+            {
+                FontPosition.Normal => 1f,
+                FontPosition.Subscript => 0.625f,
+                FontPosition.Superscript => 0.625f,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
         internal static SKFontMetrics ToFontMetrics(this TextStyle style)
         {
-            return FontMetrics.GetOrAdd(style, key => key.NormalPosition().ToPaint().FontMetrics);
+            return FontMetrics.GetOrAdd(style, key => key.ToFont().Metrics);
         }
 
         internal static Font ToShaperFont(this TextStyle style)
         {
             return ShaperFonts.GetOrAdd(style, key =>
             {
-                var typeface = key.ToPaint().Typeface;
+                var typeface = GetTypeface(key);
 
                 using var harfBuzzBlob = typeface.OpenStream(out var ttcIndex).ToHarfBuzzBlob();
                 
@@ -205,7 +203,11 @@ namespace OpenQuestPDF.Drawing
         
         internal static SKFont ToFont(this TextStyle style)
         {
-            return Fonts.GetOrAdd(style, key => key.ToPaint().ToFont());
+            return Fonts.GetOrAdd(style, key => new SKFont
+            {
+                Typeface = GetTypeface(key),
+                Size = (key.Size ?? 12) * GetTextScale(key)
+            });
         }
     }
 }
