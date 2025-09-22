@@ -42,8 +42,8 @@ namespace OpenQuestPDF.Drawing
             var glyphInfos = buffer.GlyphInfos;
             var glyphPositions = buffer.GlyphPositions;
             
-            var scaleY = Paint.TextSize / FontShapingScale;
-            var scaleX = scaleY * Paint.TextScaleX;
+            var scaleY = Font.Size / FontShapingScale;
+            var scaleX = scaleY * Font.ScaleX;
             
             var xOffset = 0f;
             var yOffset = 0f;
@@ -80,19 +80,9 @@ namespace OpenQuestPDF.Drawing
         
         void PopulateBufferWithText(Buffer buffer, string text)
         {
-            var encoding = Paint.TextEncoding;
-
-            if (encoding == SKTextEncoding.Utf8)
-                buffer.AddUtf8(text);
-                
-            else if (encoding == SKTextEncoding.Utf16)
-                buffer.AddUtf16(text);
-
-            else if (encoding == SKTextEncoding.Utf32)
-                buffer.AddUtf32(text);
-
-            else
-                throw new NotSupportedException("TextEncoding of type GlyphId is not supported.");
+            // Use UTF-16 as .NET strings are UTF-16 encoded
+            // This replaces the obsolete SKPaint.TextEncoding usage
+            buffer.AddUtf16(text);
         }
     }
     
@@ -199,8 +189,8 @@ namespace OpenQuestPDF.Drawing
             using var skTextBlobBuilder = new SKTextBlobBuilder();
             
             var positionedRunBuffer = skTextBlobBuilder.AllocatePositionedRun(textStyle.ToFont(), endIndex - startIndex + 1);
-            var glyphSpan = positionedRunBuffer.GetGlyphSpan();
-            var positionSpan = positionedRunBuffer.GetPositionSpan();
+            var glyphSpan = positionedRunBuffer.Glyphs;
+            var positionSpan = positionedRunBuffer.Positions;
                 
             for (var sourceIndex = startIndex; sourceIndex <= endIndex; sourceIndex++)
             {

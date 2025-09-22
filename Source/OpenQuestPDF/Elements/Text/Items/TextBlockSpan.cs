@@ -40,7 +40,8 @@ namespace OpenQuestPDF.Elements.Text.Items
 
             var paint = Style.ToPaint();
             var fontMetrics = Style.ToFontMetrics();
-            SpaceCodepoint ??= paint.ToFont().Typeface.GetGlyphs(" ")[0];
+            var font = Style.ToFont();
+            SpaceCodepoint ??= font.Typeface.GetGlyphs(" ")[0];
 
             var startIndex = request.StartIndex;
             
