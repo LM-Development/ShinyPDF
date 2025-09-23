@@ -22,7 +22,7 @@ namespace OpenQuestPDF.Examples
                     container
                         .Padding(15)
                         .MinimalBox()
-                        .DefaultTextStyle(TextStyle.Default.Size(16))
+                        .DefaultTextStyle(TextStyle.Default.FontSize(16))
                         .Column(column =>
                         {
                             column.Item().Text("Above text");
@@ -44,7 +44,7 @@ namespace OpenQuestPDF.Examples
                 {
                     container
                         .Padding(15)
-                        .DefaultTextStyle(TextStyle.Default.Size(16))
+                        .DefaultTextStyle(TextStyle.Default.FontSize(16))
                         .Row(row =>
                         {
                             row.AutoItem().Text("Left text");

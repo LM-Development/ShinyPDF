@@ -42,7 +42,7 @@ namespace OpenQuestPDF.Examples
                         
                         page.Footer().AlignCenter().Text(text =>
                         {
-                            text.DefaultTextStyle(TextStyle.Default.Size(16));
+                            text.DefaultTextStyle(TextStyle.Default.FontSize(16));
                             
                             text.CurrentPageNumber();
                             text.Span(" / ");

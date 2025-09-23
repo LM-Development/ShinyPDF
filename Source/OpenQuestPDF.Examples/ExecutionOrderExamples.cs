@@ -20,7 +20,7 @@ namespace OpenQuestPDF.Examples
                 .Render(container =>
                 {
                     container
-                        .DefaultTextStyle(TextStyle.Default.Size(18))
+                        .DefaultTextStyle(TextStyle.Default.FontSize(18))
                         .Padding(25)
                         .Row(row =>
                         {

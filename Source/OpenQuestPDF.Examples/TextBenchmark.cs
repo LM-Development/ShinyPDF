@@ -104,8 +104,8 @@ namespace OpenQuestPDF.Examples
         
         private void ComposeBook(IDocumentContainer container, ICollection<BookChapter> chapters)
         {
-            var subtitleStyle = TextStyle.Default.Size(24).SemiBold().Color(Colors.Blue.Medium);
-            var normalStyle = TextStyle.Default.Size(14);
+            var subtitleStyle = TextStyle.Default.FontSize(24).SemiBold().FontColor(Colors.Blue.Medium);
+            var normalStyle = TextStyle.Default.FontSize(14);
 
             container.Page(page =>
             {

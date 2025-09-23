@@ -6,9 +6,9 @@ namespace OpenQuestPDF.Infrastructure
 {
     internal class DynamicComponentProxy
     {
-        internal Action<object> SetState { get; private set; }
-        internal Func<object> GetState { get; private set; }
-        internal Func<DynamicContext, DynamicComponentComposeResult> Compose { get; private set; }
+        internal Action<object> SetState { get; private set; } = null!;
+        internal Func<object> GetState { get; private set; } = null!;
+        internal Func<DynamicContext, DynamicComponentComposeResult> Compose { get; private set; } = null!;
         
         internal static DynamicComponentProxy CreateFrom<TState>(IDynamicComponent<TState> component) where TState : struct
         {
@@ -23,7 +23,7 @@ namespace OpenQuestPDF.Infrastructure
 
     public class DynamicComponentComposeResult
     {
-        public IElement Content { get; set; }
+        public IElement Content { get; set; } = null!;
         public bool HasMoreContent { get; set; }
     }
     

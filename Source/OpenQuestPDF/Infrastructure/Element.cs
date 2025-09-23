@@ -7,8 +7,8 @@ namespace OpenQuestPDF.Infrastructure
 {
     internal abstract class Element : IElement
     {
-        internal IPageContext PageContext { get; set; }
-        internal ICanvas Canvas { get; set; }
+        internal IPageContext PageContext { get; set; } = null!;
+        internal ICanvas Canvas { get; set; } = null!;
         
         internal virtual IEnumerable<Element?> GetChildren()
         {

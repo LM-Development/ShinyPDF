@@ -97,7 +97,7 @@ namespace OpenQuestPDF.Examples
                         .Padding(10)
                         .MinimalBox()
                         .Border(1)
-                        .DefaultTextStyle(TextStyle.Default.Size(16))
+                        .DefaultTextStyle(TextStyle.Default.FontSize(16))
                         .Table(table =>
                         {
                             table.ColumnsDefinition(columns =>
