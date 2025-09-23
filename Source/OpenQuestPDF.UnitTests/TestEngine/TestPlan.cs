@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OpenQuestPDF.Drawing;
 using OpenQuestPDF.Elements;
 using OpenQuestPDF.Helpers;
@@ -43,7 +42,7 @@ namespace OpenQuestPDF.UnitTests.TestEngine
                 return result;
 
             var gotType = value?.GetType()?.Name ?? "null";
-            ClassicAssert.Fail($"Expected: {typeof(T).Name}, got {gotType}: {JsonSerializer.Serialize(value)}");
+            Assert.Fail($"Expected: {typeof(T).Name}, got {gotType}: {JsonSerializer.Serialize(value)}");
             return null;
         }
         
@@ -55,43 +54,43 @@ namespace OpenQuestPDF.UnitTests.TestEngine
                 {
                     var expected = GetExpected<CanvasTranslateOperation>();
 
-                    ClassicAssert.AreEqual(expected.Position.X, position.X, "Translate X");
-                    ClassicAssert.AreEqual(expected.Position.Y, position.Y, "Translate Y");
+                    Assert.That(position.X, Is.EqualTo(expected.Position.X), "Translate X");
+                    Assert.That(position.Y, Is.EqualTo(expected.Position.Y), "Translate Y");
                 },
                 RotateFunc = angle =>
                 {
                     var expected = GetExpected<CanvasRotateOperation>();
 
-                    ClassicAssert.AreEqual(expected.Angle, angle, "Rotate angle");
+                    Assert.That(angle, Is.EqualTo(expected.Angle), "Rotate angle");
                 },
                 ScaleFunc = (scaleX, scaleY) =>
                 {
                     var expected = GetExpected<CanvasScaleOperation>();
 
-                    ClassicAssert.AreEqual(expected.ScaleX, scaleX, "Scale X");
-                    ClassicAssert.AreEqual(expected.ScaleY, scaleY, "Scale Y");
+                    Assert.That(scaleX, Is.EqualTo(expected.ScaleX), "Scale X");
+                    Assert.That(scaleY, Is.EqualTo(expected.ScaleY), "Scale Y");
                 },
                 DrawRectFunc = (position, size, color) =>
                 {
                     var expected = GetExpected<CanvasDrawRectangleOperation>();
                     
-                    ClassicAssert.AreEqual(expected.Position.X, position.X, "Draw rectangle: X");
-                    ClassicAssert.AreEqual(expected.Position.Y, position.Y, "Draw rectangle: Y");
+                    Assert.That(position.X, Is.EqualTo(expected.Position.X), "Draw rectangle: X");
+                    Assert.That(position.Y, Is.EqualTo(expected.Position.Y), "Draw rectangle: Y");
                     
-                    ClassicAssert.AreEqual(expected.Size.Width, size.Width, "Draw rectangle: width");
-                    ClassicAssert.AreEqual(expected.Size.Height, size.Height, "Draw rectangle: height");
+                    Assert.That(size.Width, Is.EqualTo(expected.Size.Width), "Draw rectangle: width");
+                    Assert.That(size.Height, Is.EqualTo(expected.Size.Height), "Draw rectangle: height");
                     
-                    ClassicAssert.AreEqual(expected.Color, color, "Draw rectangle: color");
+                    Assert.That(color, Is.EqualTo(expected.Color), "Draw rectangle: color");
                 },
                 DrawImageFunc = (image, position, size) =>
                 {
                     var expected = GetExpected<CanvasDrawImageOperation>();
                     
-                    ClassicAssert.AreEqual(expected.Position.X, position.X, "Draw image: X");
-                    ClassicAssert.AreEqual(expected.Position.Y, position.Y, "Draw image: Y");
+                    Assert.That(position.X, Is.EqualTo(expected.Position.X), "Draw image: X");
+                    Assert.That(position.Y, Is.EqualTo(expected.Position.Y), "Draw image: Y");
                     
-                    ClassicAssert.AreEqual(expected.Size.Width, size.Width, "Draw image: width");
-                    ClassicAssert.AreEqual(expected.Size.Height, size.Height, "Draw image: height");
+                    Assert.That(size.Width, Is.EqualTo(expected.Size.Width), "Draw image: width");
+                    Assert.That(size.Height, Is.EqualTo(expected.Size.Height), "Draw image: height");
                 }
             };
         }
@@ -107,10 +106,10 @@ namespace OpenQuestPDF.UnitTests.TestEngine
                 {
                     var expected = GetExpected<ChildMeasureOperation>();
 
-                    ClassicAssert.AreEqual(expected.ChildId, id);
+                    Assert.That(id, Is.EqualTo(expected.ChildId));
                     
-                    ClassicAssert.AreEqual(expected.Input.Width, availableSpace.Width, $"Measure: width of child '{expected.ChildId}'");
-                    ClassicAssert.AreEqual(expected.Input.Height, availableSpace.Height, $"Measure: height of child '{expected.ChildId}'");
+                    Assert.That(availableSpace.Width, Is.EqualTo(expected.Input.Width), $"Measure: width of child '{expected.ChildId}'");
+                    Assert.That(availableSpace.Height, Is.EqualTo(expected.Input.Height), $"Measure: height of child '{expected.ChildId}'");
 
                     return expected.Output;
                 },
@@ -118,10 +117,10 @@ namespace OpenQuestPDF.UnitTests.TestEngine
                 {
                     var expected = GetExpected<ChildDrawOperation>();
 
-                    ClassicAssert.AreEqual(expected.ChildId, id);
+                    Assert.That(id, Is.EqualTo(expected.ChildId));
                     
-                    ClassicAssert.AreEqual(expected.Input.Width, availableSpace.Width, $"Draw: width of child '{expected.ChildId}'");
-                    ClassicAssert.AreEqual(expected.Input.Height, availableSpace.Height, $"Draw: width of child '{expected.ChildId}'");
+                    Assert.That(availableSpace.Width, Is.EqualTo(expected.Input.Width), $"Draw: width of child '{expected.ChildId}'");
+                    Assert.That(availableSpace.Height, Is.EqualTo(expected.Input.Height), $"Draw: width of child '{expected.ChildId}'");
                 }
             };
         }
@@ -200,11 +199,11 @@ namespace OpenQuestPDF.UnitTests.TestEngine
             
             var actual = Element.Measure(OperationInput);
             
-            ClassicAssert.AreEqual(expected.GetType(), actual.GetType());
+            Assert.That(actual.GetType(), Is.EqualTo(expected.GetType()));
             
-            ClassicAssert.AreEqual(expected.Width, actual.Width, "Measure: width");
-            ClassicAssert.AreEqual(expected.Height, actual.Height, "Measure: height");
-            ClassicAssert.AreEqual(expected.Type, actual.Type, "Measure: height");
+            Assert.That(actual.Width, Is.EqualTo(expected.Width), "Measure: width");
+            Assert.That(actual.Height, Is.EqualTo(expected.Height), "Measure: height");
+            Assert.That(actual.Type, Is.EqualTo(expected.Type), "Measure: height");
             
             return this;
         }
@@ -218,14 +217,14 @@ namespace OpenQuestPDF.UnitTests.TestEngine
 
         public TestPlan CheckState(Func<Element, bool> condition)
         {
-            ClassicAssert.IsTrue(condition(Element), "Checking condition");
+            Assert.That(condition(Element), Is.True, "Checking condition");
             return this;
         }
 
         public TestPlan CheckState<T>(Func<T, bool> condition) where T : Element
         {
-            ClassicAssert.IsTrue(Element is T);
-            ClassicAssert.IsTrue(condition(Element as T), "Checking condition");
+            Assert.That(Element, Is.InstanceOf<T>());
+            Assert.That(condition(Element as T), Is.True, "Checking condition");
             return this;
         }
         

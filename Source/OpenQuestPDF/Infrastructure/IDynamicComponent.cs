@@ -23,7 +23,7 @@ namespace OpenQuestPDF.Infrastructure
 
     public class DynamicComponentComposeResult
     {
-        public IElement Content { get; set; } = null!;
+        public required IElement Content { get; set; }
         public bool HasMoreContent { get; set; }
     }
     
