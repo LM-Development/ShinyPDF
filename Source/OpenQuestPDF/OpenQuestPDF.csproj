@@ -23,10 +23,10 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
-        <InternalsVisibleTo Include="QuestPDF.ReportSample" />
-        <InternalsVisibleTo Include="QuestPDF.UnitTests" />
-        <InternalsVisibleTo Include="QuestPDF.Examples" />
-        <InternalsVisibleTo Include="QuestPDF.Previewer" />
+        <InternalsVisibleTo Include="OpenQuestPDF.ReportSample" />
+        <InternalsVisibleTo Include="OpenQuestPDF.UnitTests" />
+        <InternalsVisibleTo Include="OpenQuestPDF.Examples" />
+        <InternalsVisibleTo Include="OpenQuestPDF.Previewer" />
     </ItemGroup>
 
     <ItemGroup>
