@@ -5,8 +5,8 @@ namespace OpenQuestPDF.Elements.Text.Calculation
 {
     internal class TextDrawingRequest
     {
-        public ICanvas Canvas { get; set; }
-        public IPageContext PageContext { get; set; }
+        public ICanvas Canvas { get; set; } = null!;
+        public IPageContext PageContext { get; set; } = null!;
         
         public int StartIndex { get; set; }
         public int EndIndex { get; set; }
