@@ -43,10 +43,6 @@ namespace OpenQuestPDF.Fluent
         {
             handler?.Invoke(After());
         }
-
-        #region Obsolete
-
-        #endregion
     }
     
     public static class DecorationExtensions

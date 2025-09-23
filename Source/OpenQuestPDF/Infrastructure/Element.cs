@@ -7,8 +7,9 @@ namespace OpenQuestPDF.Infrastructure
 {
     internal abstract class Element : IElement
     {
-        internal IPageContext? PageContext { get; set; }
-        internal ICanvas? Canvas { get; set; }
+        // These properties are set by the dependency injection system before any element methods are called
+        internal IPageContext PageContext { get; set; } = null!;
+        internal ICanvas Canvas { get; set; } = null!;
         
         internal virtual IEnumerable<Element?> GetChildren()
         {
