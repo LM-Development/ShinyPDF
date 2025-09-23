@@ -6,7 +6,7 @@ namespace OpenQuestPDF.Drawing
 {
     internal class SkiaDocumentCanvasBase : SkiaCanvasBase
     {
-        private SKDocument? Document { get; }
+        private SKDocument Document { get; }
 
         protected SkiaDocumentCanvasBase(SKDocument document)
         {
@@ -39,7 +39,7 @@ namespace OpenQuestPDF.Drawing
         public override void EndPage()
         {
             Document.EndPage();
-            Canvas.Dispose();
+            Canvas?.Dispose();
         }
     }
 }

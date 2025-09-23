@@ -13,7 +13,8 @@ namespace OpenQuestPDF.Helpers
     {
         internal static byte[] LoadEmbeddedResource(string resourceName)
         {
-            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName) 
+                ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
             using var reader = new BinaryReader(stream);
             
             return reader.ReadBytes((int) stream.Length);
@@ -37,7 +38,7 @@ namespace OpenQuestPDF.Helpers
         internal static void SetPropertyValue<T, TValue>(this T target, Expression<Func<T, TValue>> selector, TValue value)
         {
             var property = selector.ToPropertyInfo() ?? throw new Exception("Expected property with getter and setter.");
-            property?.SetValue(target, value);
+            property.SetValue(target, value);
         }
 
         internal static string PrettifyName(this string text)

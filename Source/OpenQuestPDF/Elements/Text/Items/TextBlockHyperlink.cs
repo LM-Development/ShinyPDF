@@ -5,7 +5,7 @@ namespace OpenQuestPDF.Elements.Text.Items
 {
     internal class TextBlockHyperlink : TextBlockSpan
     {
-        public string Url { get; set; }
+        public string Url { get; set; } = string.Empty;
         
         public override TextMeasurementResult? Measure(TextMeasurementRequest request)
         {

@@ -25,7 +25,7 @@ namespace OpenQuestPDF.Elements.Table
         // cache that stores all cells
         // first index: row number
         // inner table: list of all cells that ends at the corresponding row
-        private TableCell[][] CellsCache { get; set; }
+        private TableCell[][]? CellsCache { get; set; }
         private int MaxRow { get; set; }
         private int MaxRowSpan { get; set; }
         
@@ -195,7 +195,7 @@ namespace OpenQuestPDF.Elements.Table
                 
                 var cellsToTry = Enumerable
                     .Range(CurrentRow, MaxRow - CurrentRow + 1)
-                    .SelectMany(x => CellsCache[x]);
+                    .SelectMany(x => CellsCache?[x] ?? Array.Empty<TableCell>());
                 
                 var currentRow = CurrentRow;
                 var maxRenderingRow = RowsCount;

@@ -17,7 +17,7 @@ namespace OpenQuestPDF.Elements.Text
 
         public string Text => string.Join(" ", Items.OfType<TextBlockSpan>().Select(x => x.Text));
 
-        private Queue<ITextBlockItem> RenderingQueue { get; set; }
+        private Queue<ITextBlockItem>? RenderingQueue { get; set; }
         private int CurrentElementIndex { get; set; }
 
         private bool FontFallbackApplied { get; set; } = false;
@@ -67,7 +67,7 @@ namespace OpenQuestPDF.Elements.Text
         {
             SetDefaultAlignment();
             
-            if (!RenderingQueue.Any())
+            if (RenderingQueue == null || !RenderingQueue.Any())
                 return SpacePlan.FullRender(Size.Zero);
             
             var lines = DivideTextItemsIntoLines(availableSpace.Width, availableSpace.Height).ToList();
@@ -141,12 +141,12 @@ namespace OpenQuestPDF.Elements.Text
                 .Where(x => x.Any(y => y.Measurement.IsLast))
                 .Select(x => x.Key)
                 .ToList()
-                .ForEach(x => RenderingQueue.Dequeue());
+                .ForEach(x => RenderingQueue!.Dequeue());
 
             var lastElementMeasurement = lines.Last().Elements.Last().Measurement;
             CurrentElementIndex = lastElementMeasurement.IsLast ? 0 : lastElementMeasurement.NextIndex;
             
-            if (!RenderingQueue.Any())
+            if (RenderingQueue == null || !RenderingQueue.Any())
                 ResetState();
             
             float GetAlignmentOffset(float lineWidth)
@@ -165,7 +165,7 @@ namespace OpenQuestPDF.Elements.Text
 
         public IEnumerable<TextLine> DivideTextItemsIntoLines(float availableWidth, float availableHeight)
         {
-            var queue = new Queue<ITextBlockItem>(RenderingQueue);
+            var queue = new Queue<ITextBlockItem>(RenderingQueue ?? new Queue<ITextBlockItem>());
             var currentItemIndex = CurrentElementIndex;
             var currentHeight = 0f;
 

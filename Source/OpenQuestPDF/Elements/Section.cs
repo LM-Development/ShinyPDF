@@ -4,7 +4,7 @@ namespace OpenQuestPDF.Elements
 {
     internal class Section : ContainerElement, IStateResettable
     {
-        public string LocationName { get; set; }
+        public string LocationName { get; set; } = string.Empty;
         private bool IsRendered { get; set; }
         
         public void ResetState()

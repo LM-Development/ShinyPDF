@@ -36,7 +36,7 @@ namespace OpenQuestPDF.Fluent
         internal TextPageNumberDescriptor(Action<TextStyle> assignTextStyle, Action<PageNumberFormatter> assignFormatFunction) : base(assignTextStyle)
         {
             AssignFormatFunction = assignFormatFunction;
-            AssignFormatFunction(x => x?.ToString());
+            AssignFormatFunction(x => x?.ToString() ?? string.Empty);
         }
 
         public TextPageNumberDescriptor Format(PageNumberFormatter formatter)
@@ -169,7 +169,9 @@ namespace OpenQuestPDF.Fluent
         [Obsolete("This element has been renamed since version 2022.3. Please use the BeginPageNumberOfSection method.")]
         public void PageNumberOfLocation(string locationName, TextStyle? style = null)
         {
-            BeginPageNumberOfSection(locationName).Style(style);
+            var descriptor = BeginPageNumberOfSection(locationName);
+            if (style != null)
+                descriptor.Style(style);
         }
         
         public TextPageNumberDescriptor BeginPageNumberOfSection(string locationName)
@@ -213,7 +215,9 @@ namespace OpenQuestPDF.Fluent
         [Obsolete("This element has been renamed since version 2022.3. Please use the SectionLink method.")]
         public void InternalLocation(string? text, string locationName, TextStyle? style = null)
         {
-            SectionLink(text, locationName).Style(style);
+            var descriptor = SectionLink(text, locationName);
+            if (style != null)
+                descriptor.Style(style);
         }
         
         public TextSpanDescriptor Hyperlink(string? text, string url)
@@ -237,7 +241,9 @@ namespace OpenQuestPDF.Fluent
         [Obsolete("This element has been renamed since version 2022.3. Please use the Hyperlink method.")]
         public void ExternalLocation(string? text, string url, TextStyle? style = null)
         {
-            Hyperlink(text, url).Style(style);
+            var descriptor = Hyperlink(text, url);
+            if (style != null)
+                descriptor.Style(style);
         }
         
         public IContainer Element()
