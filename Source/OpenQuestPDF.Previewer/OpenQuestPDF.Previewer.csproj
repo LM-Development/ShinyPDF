@@ -8,7 +8,7 @@
         <ToolCommandName>questpdf-previewer</ToolCommandName>
         <PackageDescription>OpenQuestPDF is an open-source, modern and battle-tested library that can help you with generating PDF documents by offering friendly, discoverable and predictable C# fluent API.</PackageDescription>
         <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
-        <RepositoryUrl>https://github.com/LMDevelopment/OpenQuestPDF.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/LM-Development/OpenQuestPDF.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Copyright>LM IT Services AG, OpenQuestPDF contributors</Copyright>
         <PackageTags>pdf report file export generate generation tool create creation render portable document format quest html library converter open source free standard core previewer</PackageTags>

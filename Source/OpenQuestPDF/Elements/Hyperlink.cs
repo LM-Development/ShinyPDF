@@ -5,7 +5,7 @@ namespace OpenQuestPDF.Elements
 {
     internal class Hyperlink : ContainerElement
     {
-        public string Url { get; set; } = "https://www.questpdf.com";
+        public string Url { get; set; } = string.Empty;
         
         internal override void Draw(Size availableSpace)
         {
