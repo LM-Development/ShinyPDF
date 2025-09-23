@@ -5,15 +5,35 @@ using OpenQuestPDF.Elements;
 using OpenQuestPDF.Infrastructure;
 using OpenQuestPDF.UnitTests.TestEngine;
 using SkiaSharp;
+using System;
 
 namespace OpenQuestPDF.UnitTests
 {
     [TestFixture]
     public class DynamicImageTests
     {
+        private static bool IsSkiaSharpAvailable()
+        {
+            try
+            {
+                var info = new SKImageInfo(1, 1);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         [Test]
         public void Measure_TakesAvailableSpaceRegardlessOfSize()
         {
+            if (!IsSkiaSharpAvailable())
+            {
+                Assert.Ignore("SkiaSharp is not available on this platform");
+                return;
+            }
+
             TestPlan
                 .For(x => new DynamicImage
                 {
@@ -38,6 +58,12 @@ namespace OpenQuestPDF.UnitTests
         [Test]
         public void Draw_PreservesSize()
         {
+            if (!IsSkiaSharpAvailable())
+            {
+                Assert.Ignore("SkiaSharp is not available on this platform");
+                return;
+            }
+
             TestPlan
                 .For(x => new DynamicImage
                 {
@@ -51,6 +77,12 @@ namespace OpenQuestPDF.UnitTests
         [Test]
         public void Draw_PassesCorrectSizeToSource()
         {
+            if (!IsSkiaSharpAvailable())
+            {
+                Assert.Ignore("SkiaSharp is not available on this platform");
+                return;
+            }
+
             Size passedSize = default;
 
             TestPlan
