@@ -25,7 +25,7 @@ namespace OpenQuestPDF.Elements
 
     internal class RowItemRenderingCommand
     {
-        public RowItem RowItem { get; set; }
+        public required RowItem RowItem { get; set; }
         public SpacePlan Measurement { get; set; }
         public Size Size { get; set; }
         public Position Offset { get; set; }
@@ -48,7 +48,7 @@ namespace OpenQuestPDF.Elements
             return Items;
         }
         
-        internal override void CreateProxy(Func<Element?, Element?> create)
+        internal override void CreateProxy(Func<Element, Element> create)
         {
             Items.ForEach(x => x.Child = create(x.Child));
         }
@@ -79,6 +79,8 @@ namespace OpenQuestPDF.Elements
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             if (!Items.Any())
                 return;
 

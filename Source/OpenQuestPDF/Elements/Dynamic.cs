@@ -48,6 +48,10 @@ namespace OpenQuestPDF.Elements
 
         private DynamicComponentComposeResult GetContent(Size availableSize, bool acceptNewState)
         {
+            if(Canvas == null)
+                throw new InvalidOperationException("The Canvas property is not set. This indicates a bug in the library - please report it on GitHub.");
+            if(PageContext == null)
+                throw new InvalidOperationException("The PageContext property is not set. This indicates a bug in the library - please report it on GitHub.");
             var componentState = Child.GetState();
             
             var context = new DynamicContext
@@ -59,7 +63,7 @@ namespace OpenQuestPDF.Elements
                 ContentDirection = ContentDirection,
                 
                 PageNumber = PageContext.CurrentPage,
-                TotalPages = PageContext.GetLocation(Infrastructure.PageContext.DocumentLocation).PageEnd,
+                TotalPages = PageContext.GetLocation(Infrastructure.PageContext.DocumentLocation)?.PageEnd ?? 0,
                 AvailableSize = availableSize
             };
             
@@ -74,10 +78,10 @@ namespace OpenQuestPDF.Elements
 
     public class DynamicContext
     {
-        internal IPageContext PageContext { get; set; }
-        internal ICanvas Canvas { get; set; }
+        internal IPageContext? PageContext { get; set; }
+        internal ICanvas? Canvas { get; set; }
         
-        internal TextStyle TextStyle { get; set; }
+        internal TextStyle? TextStyle { get; set; }
         internal ContentDirection ContentDirection { get; set; }
     
         public int PageNumber { get; internal set; }
@@ -86,6 +90,10 @@ namespace OpenQuestPDF.Elements
 
         public IDynamicElement CreateElement(Action<IContainer> content)
         {
+            if (PageContext == null || TextStyle == null || Canvas == null)
+            {
+                throw new ArgumentNullException("PageContext, TextStyle and Canvas properties must be set before calling CreateElement.");
+            }
             var container = new DynamicElement();
             content(container);
             

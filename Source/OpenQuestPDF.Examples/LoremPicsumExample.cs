@@ -23,7 +23,7 @@ namespace OpenQuestPDF.Examples
                 url += "?grayscale";
 
             using var client = new WebClient();
-            client.Headers.Add("user-agent", "QuestPDF/1.0 Unit Testing");
+            client.Headers.Add("user-agent", "OpenQuestPDF/1.0 Unit Testing");
             
             var response = client.DownloadData(url);
             container.Image(response);

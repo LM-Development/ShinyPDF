@@ -9,6 +9,8 @@ namespace OpenQuestPDF.Elements
         
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             Canvas.DrawRectangle(Position.Zero, availableSpace, Color);
             base.Draw(availableSpace);
         }

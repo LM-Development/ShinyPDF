@@ -13,7 +13,11 @@ namespace OpenQuestPDF.Elements
         {
             if (Child == null)
                 return;
+
+            if (Canvas == null)
+                return;
             
+
             var childMeasurement = base.Measure(availableSpace);
             
             if (childMeasurement.Type == SpacePlanType.Wrap)
@@ -25,7 +29,7 @@ namespace OpenQuestPDF.Elements
 
             var top = GetTopOffset(availableSpace, childSize);
             var left = GetLeftOffset(availableSpace, childSize);
-            
+
             Canvas.Translate(new Position(left, top));
             base.Draw(childSize);
             Canvas.Translate(new Position(-left, -top));

@@ -70,7 +70,10 @@ namespace OpenQuestPDF.Fluent
         static void Slot(this IContainer element, ISlot slot)
         {
             var child = (slot as Slot)?.Child;
-            element.Element(child);
+            if (child is IElement nonNullChild)
+            {
+                element.Element(nonNullChild);
+            }
         }
     }
 }

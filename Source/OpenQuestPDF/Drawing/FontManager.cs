@@ -90,6 +90,8 @@ namespace OpenQuestPDF.Drawing
                 var filePath = $"OpenQuestPDF.Resources.DefaultFont.{fileName}";
                 
                 using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filePath);
+                if (stream == null)
+                    throw new InvalidOperationException($"Cannot load default font file from an embedded resource. Please make sure that the resource is available: {filePath}");
                 RegisterFont(stream);
             }
         }
@@ -139,8 +141,13 @@ namespace OpenQuestPDF.Drawing
 
             var fontStyle = new SKFontStyle(weight, SKFontStyleWidth.Normal, slant);
 
-            if (StyleSets.TryGetValue(style.FontFamily, out var fontStyleSet))
-                return fontStyleSet.Match(fontStyle);
+            if (style.FontFamily != null && StyleSets.TryGetValue(style.FontFamily, out var fontStyleSet))
+            { 
+                var fontStyleTypeface = fontStyleSet.Match(fontStyle);
+                if (fontStyleTypeface != null)
+                    return fontStyleTypeface;
+            }
+
 
             var fontFromDefaultSource = SKFontManager.Default.MatchFamily(style.FontFamily, fontStyle);
             

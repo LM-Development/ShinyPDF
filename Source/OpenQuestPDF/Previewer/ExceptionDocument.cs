@@ -87,7 +87,7 @@ namespace OpenQuestPDF.Previewer
                                 text.Span(currentException.Message);
                             });
                         
-                        foreach (var trace in currentException.StackTrace.Split('\n'))
+                        foreach (var trace in currentException?.StackTrace?.Split('\n') ?? [])
                         {
                             column
                                 .Item()
@@ -99,7 +99,7 @@ namespace OpenQuestPDF.Previewer
                                 .FontSize(12);
                         }
                         
-                        currentException = currentException.InnerException;
+                        currentException = currentException?.InnerException;
                     }
                 });
             });

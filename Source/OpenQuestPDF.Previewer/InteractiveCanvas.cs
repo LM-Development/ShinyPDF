@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using Avalonia.Skia;
@@ -9,7 +10,7 @@ namespace OpenQuestPDF.Previewer;
 class InteractiveCanvas : ICustomDrawOperation
 {
     public Rect Bounds { get; set; }
-    public ICollection<PreviewPage> Pages { get; set; }
+    public ICollection<PreviewPage>? Pages { get; set; }
 
     private float Width => (float)Bounds.Width;
     private float Height => (float)Bounds.Height;
@@ -24,9 +25,9 @@ class InteractiveCanvas : ICustomDrawOperation
     private const float PageSpacing = 25f;
     private const float SafeZone = 25f;
 
-    public float TotalPagesHeight => Pages.Sum(x => x.Height) + (Pages.Count - 1) * PageSpacing;
+    public float TotalPagesHeight => Pages != null ? Pages.Sum(x => x.Height) + (Pages.Count - 1) * PageSpacing : 0;
     public float TotalHeight => TotalPagesHeight + SafeZone * 2 / Scale;
-    public float MaxWidth => Pages.Any() ? Pages.Max(x => x.Width) : 0;
+    public float MaxWidth => Pages != null && Pages.Any() ? Pages.Max(x => x.Width) : 0;
     
     public float MaxTranslateY => TotalHeight - Height / Scale;
 
@@ -109,18 +110,20 @@ class InteractiveCanvas : ICustomDrawOperation
     
     #region rendering
     
-    public void Render(IDrawingContextImpl context)
+    public void Render(ImmediateDrawingContext context)
     {
-        if (Pages.Count <= 0)
+        var leaseFeature = context.TryGetFeature<ISkiaSharpApiLeaseFeature>();
+        if (leaseFeature == null)
+            throw new InvalidOperationException($"Context needs to support {nameof(ISkiaSharpApiLeaseFeature)}");
+        using var lease = leaseFeature.Lease();
+
+        var canvas = lease.SkCanvas;
+
+        if (Pages == null || Pages.Count <= 0)
             return;
 
         LimitScale();
-        LimitTranslate();
-        
-        var canvas = (context as ISkiaDrawingContextImpl)?.SkCanvas;
-        
-        if (canvas == null)
-            throw new InvalidOperationException($"Context needs to be ISkiaDrawingContextImpl but got {nameof(context)}");
+        LimitTranslate();     
 
         var originalMatrix = canvas.TotalMatrix;
 

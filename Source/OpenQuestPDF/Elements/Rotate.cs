@@ -8,6 +8,8 @@ namespace OpenQuestPDF.Elements
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             Canvas.Rotate(Angle);
             Child?.Draw(availableSpace);
             Canvas.Rotate(-Angle);

@@ -14,8 +14,13 @@ namespace OpenQuestPDF.Elements
         
         internal override void Draw(Size availableSpace)
         {
+            if(PageContext == null)
+                return;
+
             if (!IsRendered)
             {
+                if (Canvas == null)
+                    return;
                 Canvas.DrawSection(LocationName);
                 IsRendered = true;
             }

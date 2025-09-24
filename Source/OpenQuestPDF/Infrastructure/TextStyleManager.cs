@@ -239,7 +239,7 @@ namespace OpenQuestPDF.Infrastructure
         private static TextStyle UpdateFontFallback(this TextStyle style, bool overrideStyle)
         {
             var targetFallbackStyle = style
-                ?.Fallback
+                .Fallback
                 ?.ApplyStyleProperties(style, overrideStyle: overrideStyle, overrideFontFamily: false, applyFallback: false)
                 ?.UpdateFontFallback(overrideStyle);
             

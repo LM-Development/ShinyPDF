@@ -9,7 +9,7 @@ namespace OpenQuestPDF.Elements
 {
     internal class DecorationItemRenderingCommand
     {
-        public Element Element { get; set; }
+        public required Element Element { get; set; }
         public SpacePlan Measurement { get; set; }
         public Position Offset { get; set; }
     }
@@ -29,7 +29,7 @@ namespace OpenQuestPDF.Elements
             yield return After;
         }
         
-        internal override void CreateProxy(Func<Element?, Element?> create)
+        internal override void CreateProxy(Func<Element, Element> create)
         {
             Before = create(Before);
             Content = create(Content);
@@ -59,6 +59,9 @@ namespace OpenQuestPDF.Elements
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
+
             var renderingCommands = PlanLayout(availableSpace).ToList();
             var width = renderingCommands.Max(x => x.Measurement.Width);
             

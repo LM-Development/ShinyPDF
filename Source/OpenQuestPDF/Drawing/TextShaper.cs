@@ -203,10 +203,15 @@ namespace OpenQuestPDF.Drawing
             var firstVisualCharacterIndex = Direction == Direction.LeftToRight
                 ? startIndex
                 : endIndex;
-            
+
+            var textBlob = skTextBlobBuilder.Build();
+
+            if(textBlob == null)
+                return null;
+
             return new DrawTextCommand
             {
-                SkTextBlob = skTextBlobBuilder.Build(),
+                SkTextBlob = textBlob,
                 TextOffsetX = -this[firstVisualCharacterIndex].Position.X
             };
         }

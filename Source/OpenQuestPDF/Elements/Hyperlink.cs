@@ -9,6 +9,8 @@ namespace OpenQuestPDF.Elements
         
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             var targetSize = base.Measure(availableSpace);
 
             if (targetSize.Type == SpacePlanType.Wrap)

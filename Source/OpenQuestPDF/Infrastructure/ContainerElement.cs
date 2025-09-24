@@ -7,12 +7,13 @@ namespace OpenQuestPDF.Infrastructure
 {
     internal abstract class ContainerElement : Element, IContainer
     {
-        internal Element? Child { get; set; } = Empty.Instance;
+        internal Element Child { get; set; } = Empty.Instance;
 
-        IElement? IContainer.Child
+        IElement
+        IContainer.Child
         {
             get => Child;
-            set => Child = value as Element;
+            set => Child = value as Element ?? Empty.Instance;
         }
 
         internal override IEnumerable<Element?> GetChildren()
@@ -20,7 +21,7 @@ namespace OpenQuestPDF.Infrastructure
             yield return Child;
         }
 
-        internal override void CreateProxy(Func<Element?, Element?> create)
+        internal override void CreateProxy(Func<Element, Element> create)
         {
             Child = create(Child);
         }

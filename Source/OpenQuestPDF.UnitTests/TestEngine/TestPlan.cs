@@ -273,8 +273,19 @@ namespace OpenQuestPDF.UnitTests.TestEngine
             var expectedCanvas = new OperationRecordingCanvas();
             expected.InjectDependencies(null, expectedCanvas);
             expected.Draw(availableSpace.Value);
-            
-            valueCanvas.Operations.Should().BeEquivalentTo(expectedCanvas.Operations);
+
+            // Prüfe, ob Operationen vorhanden sind
+            Assert.That(valueCanvas.Operations, Is.Not.Null, "valueCanvas.Operations ist null");
+            Assert.That(expectedCanvas.Operations, Is.Not.Null, "expectedCanvas.Operations ist null");
+
+            // Prüfe, ob Operationen nicht leer sind
+            Assert.That(valueCanvas.Operations.Count, Is.GreaterThan(0), "valueCanvas.Operations ist leer");
+            Assert.That(expectedCanvas.Operations.Count, Is.GreaterThan(0), "expectedCanvas.Operations ist leer");
+
+            // Vergleiche die Operationen
+            valueCanvas.Operations.Should().BeEquivalentTo(expectedCanvas.Operations, options => options
+                .PreferringRuntimeMemberTypes()
+                .WithTracing());
         }
     }
 }

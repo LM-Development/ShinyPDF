@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Authors>LM Development</Authors>
@@ -38,6 +38,7 @@
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6" />
         <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.6" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.6" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.6" />
         <PackageReference Include="ReactiveUI" Version="21.0.1" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.0" />
         <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.119.0" />

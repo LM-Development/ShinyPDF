@@ -90,7 +90,8 @@ namespace OpenQuestPDF.Examples
                                 .Cell().ColumnSpan(5)
                                 .AlignRight()
                                 .PaddingTop(10)
-                                .Text($"Subtotal: {total}$", TextStyle.Default.Bold());
+                                .Text($"Subtotal: {total}$")
+                                .Style(TextStyle.Default.Bold());
                         });
                         
                         foreach (var index in Enumerable.Range(State.ShownItemsCount, itemsToDisplay))
@@ -137,7 +138,7 @@ namespace OpenQuestPDF.Examples
                         .Decoration(decoration =>
                         {
                             decoration
-                                .Header()
+                                .Before()
                                 .PaddingBottom(5)
                                 .Text(text =>
                                 {

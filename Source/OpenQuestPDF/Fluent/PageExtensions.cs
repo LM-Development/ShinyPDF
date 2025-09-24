@@ -169,7 +169,8 @@ namespace OpenQuestPDF.Fluent
             var descriptor = new PageDescriptor();
             handler(descriptor);
             
-            (document as DocumentContainer).Pages.Add(descriptor.Page);
+            if(document is DocumentContainer documentContainer)
+                documentContainer.Pages.Add(descriptor.Page);
             
             return document;
         }

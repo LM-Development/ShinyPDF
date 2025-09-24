@@ -58,10 +58,13 @@ namespace OpenQuestPDF.Previewer
             }
         }
         
-        private async Task<Version> GetPreviewerVersion()
+async Task<Version> GetPreviewerVersion()
         {
             using var result = await HttpClient.GetAsync("/version");
-            return await result.Content.ReadFromJsonAsync<Version>();
+            var version = await result.Content.ReadFromJsonAsync<Version>();
+            if (version == null)
+                throw new ArgumentNullException("Die Version des Previewers konnte nicht abgerufen werden.");
+            return version;
         }
         
         private void StartPreviewer()
@@ -72,7 +75,7 @@ namespace OpenQuestPDF.Previewer
                 {
                     StartInfo = new()
                     {
-                        FileName = "questpdf-previewer",
+                        FileName = "openquestpdf-previewer",
                         Arguments = $"{Port}",
                         UseShellExecute = false,
                         CreateNoWindow = true

@@ -25,6 +25,8 @@ namespace OpenQuestPDF.Elements
         
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             var perfectScale = FindPerfectScale(Child, availableSpace);
             
             if (!perfectScale.HasValue)

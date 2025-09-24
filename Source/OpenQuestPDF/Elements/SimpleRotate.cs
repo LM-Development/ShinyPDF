@@ -33,6 +33,8 @@ namespace OpenQuestPDF.Elements
         
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             var translate = new Position(
                 (NormalizedTurnCount == 1 || NormalizedTurnCount == 2) ? availableSpace.Width : 0,
                 (NormalizedTurnCount == 2 || NormalizedTurnCount == 3) ? availableSpace.Height : 0);

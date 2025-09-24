@@ -928,7 +928,7 @@ namespace OpenQuestPDF.Examples
                     var paint = new SKPaint
                     {
                         Color = SKColors.Red,
-                        TextSize = fontSize
+                        TextSize = fontSize,
                     };
                     
                     var fontMetrics = paint.FontMetrics;

@@ -50,8 +50,6 @@ namespace OpenQuestPDF.Fluent
     
     public class TableDescriptor
     {
-        internal List<TableColumnDefinition> Columns { get; private set; }
-
         private Table HeaderTable { get; } = new();
         private Table ContentTable { get; } = new();
         private Table FooterTable { get; } = new();

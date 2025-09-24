@@ -26,8 +26,8 @@ namespace OpenQuestPDF.Fluent
                 throw new DocumentComposeException(message);
             }
 
-            if (element != child as Element)
-                element.Child = child as Element;
+            if (element != null && child is Element childElement && element != childElement)
+                element.Child = childElement;
             
             return child;
         }
