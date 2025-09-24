@@ -55,7 +55,7 @@ namespace OpenQuestPDF.Fluent
     
     public static class GridExtensions
     {
-        [Obsolete("This element has been deprecated since version 2022.11. Please use the Table element, or the combination of the Row and Column elements.")]
+        [Obsolete("This element has been deprecated since version QuestPDF Version 2022.11. Please use the Table element, or the combination of the Row and Column elements.")]
         public static void Grid(this IContainer element, Action<GridDescriptor> handler)
         {
             var descriptor = new GridDescriptor();

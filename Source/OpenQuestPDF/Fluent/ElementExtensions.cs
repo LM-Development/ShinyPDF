@@ -102,11 +102,6 @@ namespace OpenQuestPDF.Fluent
             return element.Element(new Container());
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the Hyperlink method.")]
-        public static IContainer ExternalLink(this IContainer element, string url)
-        {
-            return element.Hyperlink(url);
-        }
         
         public static IContainer Hyperlink(this IContainer element, string url)
         {
@@ -116,11 +111,6 @@ namespace OpenQuestPDF.Fluent
             });
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the Section method.")]
-        public static IContainer Location(this IContainer element, string locationName)
-        {
-            return element.Section(locationName);
-        }
         
         public static IContainer Section(this IContainer element, string sectionName)
         {
@@ -130,11 +120,6 @@ namespace OpenQuestPDF.Fluent
             });
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the SectionLink method.")]
-        public static IContainer InternalLink(this IContainer element, string locationName)
-        {
-            return element.SectionLink(locationName);
-        }
         
         public static IContainer SectionLink(this IContainer element, string sectionName)
         {
@@ -157,11 +142,6 @@ namespace OpenQuestPDF.Fluent
             });
         }
         
-        [Obsolete("This element has been renamed since version 2022.1. Please use the MinimalBox method.")]
-        public static IContainer Box(this IContainer element)
-        {
-            return element.Element(new MinimalBox());
-        }
         
         public static IContainer MinimalBox(this IContainer element)
         {

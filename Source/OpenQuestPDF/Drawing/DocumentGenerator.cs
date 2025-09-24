@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using OpenQuestPDF.Drawing.Exceptions;
 using OpenQuestPDF.Drawing.Proxy;
 using OpenQuestPDF.Elements;
 using OpenQuestPDF.Elements.Text;
 using OpenQuestPDF.Elements.Text.Items;
-using OpenQuestPDF.Fluent;
 using OpenQuestPDF.Helpers;
 using OpenQuestPDF.Infrastructure;
 

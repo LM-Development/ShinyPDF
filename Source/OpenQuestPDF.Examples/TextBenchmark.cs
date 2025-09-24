@@ -147,7 +147,7 @@ namespace OpenQuestPDF.Examples
                     
                     foreach (var chapter in chapters)
                     {
-                        column.Item().InternalLink(chapter.Title).Row(row =>
+                        column.Item().SectionLink(chapter.Title).Row(row =>
                         {
                             row.RelativeItem().Text(chapter.Title).Style(normalStyle);
                             row.ConstantItem(100).AlignRight().Text(text => text.BeginPageNumberOfSection(chapter.Title).Style(normalStyle));
@@ -199,7 +199,7 @@ namespace OpenQuestPDF.Examples
 
             void SectionTitle(ColumnDescriptor column, string text)
             {
-                column.Item().Location(text).Text(text).Style(subtitleStyle);
+                column.Item().Section(text).Text(text).Style(subtitleStyle);
                 column.Item().PaddingTop(10).PaddingBottom(50).BorderBottom(1).BorderColor(Colors.Grey.Lighten2).ExtendHorizontal();
             }
             

@@ -114,11 +114,6 @@ namespace OpenQuestPDF.Fluent
             Page.BackgroundColor = color;
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the PageColor method.")]
-        public void Background(string color)
-        {
-            PageColor(color);
-        }
         
         #endregion
         

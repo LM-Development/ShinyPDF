@@ -24,18 +24,6 @@ namespace OpenQuestPDF.Fluent
             Row.Items.Add(element);
             return element;
         }
-        
-        [Obsolete("This element has been renamed since version 2022.2. Please use the RelativeItem method.")]
-        public IContainer RelativeColumn(float size = 1)
-        {
-            return Item(RowItemType.Relative, size);
-        }
-        
-        [Obsolete("This element has been renamed since version 2022.2. Please use the ConstantItem method.")]
-        public IContainer ConstantColumn(float size)
-        {
-            return Item(RowItemType.Constant, size);
-        }
 
         public IContainer RelativeItem(float size = 1)
         {

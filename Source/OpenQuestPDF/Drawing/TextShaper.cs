@@ -81,7 +81,6 @@ namespace OpenQuestPDF.Drawing
         void PopulateBufferWithText(Buffer buffer, string text)
         {
             // Use UTF-16 as .NET strings are UTF-16 encoded
-            // This replaces the obsolete SKPaint.TextEncoding usage
             buffer.AddUtf16(text);
         }
     }
