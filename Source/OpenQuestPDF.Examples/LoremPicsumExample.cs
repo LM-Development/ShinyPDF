@@ -1,4 +1,4 @@
-using System.Net;
+using System.Net.Http;
 using NUnit.Framework;
 using OpenQuestPDF.Examples.Engine;
 using OpenQuestPDF.Fluent;
@@ -14,7 +14,7 @@ namespace OpenQuestPDF.Examples
         {
             Greyscale = greyscale;
         }
-        
+
         public void Compose(IContainer container)
         {
             var url = "https://picsum.photos/300/200";
@@ -22,14 +22,15 @@ namespace OpenQuestPDF.Examples
             if (Greyscale)
                 url += "?grayscale";
 
-            using var client = new WebClient();
-            client.Headers.Add("user-agent", "OpenQuestPDF/1.0 Unit Testing");
-            
-            var response = client.DownloadData(url);
-            container.Image(response);
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("user-agent", "OpenQuestPDF/1.0 Unit Testing");
+
+            var response = client.GetByteArrayAsync(url);
+            response.Wait();
+            container.Image(response.Result);
         }
     }
-    
+
     public class LoremPicsumExample
     {
         [Test]
@@ -52,7 +53,7 @@ namespace OpenQuestPDF.Examples
                             column
                                 .Item()
                                 .Component(new LoremPicsum(true));
-                    
+
                             column
                                 .Item()
                                 .AlignRight()

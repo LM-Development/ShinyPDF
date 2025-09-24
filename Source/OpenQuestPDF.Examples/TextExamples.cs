@@ -928,10 +928,14 @@ namespace OpenQuestPDF.Examples
                     var paint = new SKPaint
                     {
                         Color = SKColors.Red,
-                        TextSize = fontSize,
+                    };
+
+                    var font = new SKFont
+                    {
+                        Size = fontSize,
                     };
                     
-                    var fontMetrics = paint.FontMetrics;
+                    var fontMetrics = font.Metrics;
 
                     var start = 0f;
                     var end = 0f;
