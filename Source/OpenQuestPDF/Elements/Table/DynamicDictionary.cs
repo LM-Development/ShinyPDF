@@ -7,15 +7,11 @@ namespace OpenQuestPDF.Elements.Table
     /// This dictionary allows to access key that does not exist.
     /// Instead of throwing an exception, it returns a default value.
     /// </summary>
-    internal class DynamicDictionary<TKey, TValue>
+    internal class DynamicDictionary<TKey, TValue> where TKey : notnull
     {
         private TValue Default { get; }
         private IDictionary<TKey, TValue> Dictionary { get; } = new Dictionary<TKey, TValue>();
 
-        public DynamicDictionary()
-        {
-            
-        }
         
         public DynamicDictionary(TValue defaultValue)
         {

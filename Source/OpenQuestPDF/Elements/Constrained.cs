@@ -47,6 +47,9 @@ namespace OpenQuestPDF.Elements
         
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
+
             var size = new Size(
                 Min(MaxWidth, availableSpace.Width),
                 Min(MaxHeight, availableSpace.Height));

@@ -20,12 +20,10 @@ namespace OpenQuestPDF.Elements.Text
 
         public class FallbackOption
         {
-            public TextStyle Style { get; set; }
-            public SKFont Font { get; set; }
-            public SKTypeface Typeface { get; set; }
+            public required TextStyle Style { get; set; }
+            public required SKFont Font { get; set; }
+            public required SKTypeface Typeface { get; set; }
         }
-
-        private static SKFontManager FontManager => SKFontManager.Default;
 
         public static IEnumerable<TextRun> SplitWithFontFallback(this string text, TextStyle textStyle)
         {

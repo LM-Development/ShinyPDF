@@ -28,11 +28,6 @@ namespace OpenQuestPDF.Fluent
     
     public static class ColumnExtensions
     {
-        [Obsolete("This element has been renamed since version 2022.2. Please use the 'Column' method.")]
-        public static void Stack(this IContainer element, Action<ColumnDescriptor> handler)
-        {
-            element.Column(handler);
-        }
         
         public static void Column(this IContainer element, Action<ColumnDescriptor> handler)
         {

@@ -81,7 +81,6 @@ namespace OpenQuestPDF.Drawing
         void PopulateBufferWithText(Buffer buffer, string text)
         {
             // Use UTF-16 as .NET strings are UTF-16 encoded
-            // This replaces the obsolete SKPaint.TextEncoding usage
             buffer.AddUtf16(text);
         }
     }
@@ -203,10 +202,15 @@ namespace OpenQuestPDF.Drawing
             var firstVisualCharacterIndex = Direction == Direction.LeftToRight
                 ? startIndex
                 : endIndex;
-            
+
+            var textBlob = skTextBlobBuilder.Build();
+
+            if(textBlob == null)
+                return null;
+
             return new DrawTextCommand
             {
-                SkTextBlob = skTextBlobBuilder.Build(),
+                SkTextBlob = textBlob,
                 TextOffsetX = -this[firstVisualCharacterIndex].Position.X
             };
         }

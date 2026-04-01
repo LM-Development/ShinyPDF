@@ -17,7 +17,7 @@ namespace OpenQuestPDF.UnitTests
         [Test]
         public void LoadFontFromEmbeddedResource()
         {
-            FontManager.RegisterFontFromEmbeddedResource("QuestPDF.UnitTests.Resources.FontEmbeddedResource.ttf");
+            FontManager.RegisterFontFromEmbeddedResource("OpenQuestPDF.UnitTests.Resources.FontEmbeddedResource.ttf");
         }
         
         [Test]
@@ -25,7 +25,7 @@ namespace OpenQuestPDF.UnitTests
         {
             Assert.Throws<ArgumentException>(() =>
             {
-                FontManager.RegisterFontFromEmbeddedResource("QuestPDF.UnitTests.WrongPath.ttf");
+                FontManager.RegisterFontFromEmbeddedResource("OpenQuestPDF.UnitTests.WrongPath.ttf");
             });
         }
     }

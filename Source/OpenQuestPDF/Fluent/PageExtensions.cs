@@ -114,11 +114,6 @@ namespace OpenQuestPDF.Fluent
             Page.BackgroundColor = color;
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the PageColor method.")]
-        public void Background(string color)
-        {
-            PageColor(color);
-        }
         
         #endregion
         
@@ -169,7 +164,8 @@ namespace OpenQuestPDF.Fluent
             var descriptor = new PageDescriptor();
             handler(descriptor);
             
-            (document as DocumentContainer).Pages.Add(descriptor.Page);
+            if(document is DocumentContainer documentContainer)
+                documentContainer.Pages.Add(descriptor.Page);
             
             return document;
         }

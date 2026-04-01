@@ -192,7 +192,7 @@ namespace OpenQuestPDF.Examples
                 .PageSize(400, 230)
                 .Render(container =>
                 {
-                    var textStyle = TextStyle.Default.Size(14);
+                    var textStyle = TextStyle.Default.FontSize(14);
             
                     container
                         .Padding(15)
@@ -503,8 +503,8 @@ namespace OpenQuestPDF.Examples
                         {
                             var headerFontStyle = TextStyle
                                 .Default
-                                .Size(20)
-                                .Color(Colors.Blue.Darken2)
+                                .FontSize(20)
+                                .FontColor(Colors.Blue.Darken2)
                                 .SemiBold();
     
                             decoration
@@ -525,7 +525,7 @@ namespace OpenQuestPDF.Examples
                                             ? Colors.Red.Lighten4
                                             : Colors.Green.Lighten4;
 
-                                        var fontStyle = TextStyle.Default.Size(16);
+                                        var fontStyle = TextStyle.Default.FontSize(16);
                 
                                         column
                                             .Item()

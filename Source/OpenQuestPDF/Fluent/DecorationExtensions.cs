@@ -43,38 +43,6 @@ namespace OpenQuestPDF.Fluent
         {
             handler?.Invoke(After());
         }
-
-        #region Obsolete
-
-        [Obsolete("This element has been renamed since version 2022.2. Please use the 'Before' method.")]
-        public IContainer Header()
-        {
-            var container = new Container();
-            Decoration.Before = container;
-            return container;
-        }
-        
-        [Obsolete("This element has been renamed since version 2022.2. Please use the 'Before' method.")]
-        public void Header(Action<IContainer> handler)
-        {
-            handler?.Invoke(Header());
-        }
-        
-        [Obsolete("This element has been renamed since version 2022.2. Please use the 'After' method.")]
-        public IContainer Footer()
-        {
-            var container = new Container();
-            Decoration.After = container;
-            return container;
-        }
-        
-        [Obsolete("This element has been renamed since version 2022.2. Please use the 'After' method.")]
-        public void Footer(Action<IContainer> handler)
-        {
-            handler?.Invoke(Footer());
-        }
-
-        #endregion
     }
     
     public static class DecorationExtensions

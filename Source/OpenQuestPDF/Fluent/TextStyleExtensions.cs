@@ -7,12 +7,6 @@ namespace OpenQuestPDF.Fluent
 {
     public static class TextStyleExtensions
     {
-        [Obsolete("This element has been renamed since version 2022.3. Please use the FontColor method.")]
-        public static TextStyle Color(this TextStyle style, string value)
-        {
-            return style.FontColor(value);
-        }
-        
         public static TextStyle FontColor(this TextStyle style, string value)
         {
             ColorValidator.Validate(value);
@@ -25,25 +19,17 @@ namespace OpenQuestPDF.Fluent
             return style.Mutate(TextStyleProperty.BackgroundColor, value);
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the FontFamily method.")]
-        public static TextStyle FontType(this TextStyle style, string value)
-        {
-            return style.FontFamily(value);
-        }
-        
         public static TextStyle FontFamily(this TextStyle style, string value)
         {
             return style.Mutate(TextStyleProperty.FontFamily, value);
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the FontSize method.")]
-        public static TextStyle Size(this TextStyle style, float value)
-        {
-            return style.FontSize(value);
-        }
-        
+        /// <include file='../Resources/Documentation.xml' path='documentation/doc[@for=\"text.fontSize\"]/*' />
         public static TextStyle FontSize(this TextStyle style, float value)
         {
+            if (value <= 0)
+                throw new ArgumentException("Font size must be greater than 0.");
+            
             return style.Mutate(TextStyleProperty.Size, value);
         }
         
@@ -169,7 +155,7 @@ namespace OpenQuestPDF.Fluent
         
         public static TextStyle Fallback(this TextStyle style, TextStyle? value = null)
         {
-            return style.Mutate(TextStyleProperty.Fallback, value);
+            return style.Mutate(TextStyleProperty.Fallback, value ?? TextStyle.Default);
         }
         
         public static TextStyle Fallback(this TextStyle style, Func<TextStyle, TextStyle> handler)

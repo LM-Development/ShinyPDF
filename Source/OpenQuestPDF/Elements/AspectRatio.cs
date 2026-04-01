@@ -42,7 +42,9 @@ namespace OpenQuestPDF.Elements
         {
             if (Child == null)
                 return;
-            
+            if (Canvas == null)
+                return;
+
             var size = GetTargetSize(availableSpace);
             
             var offset = ContentDirection == ContentDirection.LeftToRight

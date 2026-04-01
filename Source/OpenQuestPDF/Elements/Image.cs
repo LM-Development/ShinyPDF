@@ -23,6 +23,8 @@ namespace OpenQuestPDF.Elements
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             if (InternalImage == null)
                 return;
 

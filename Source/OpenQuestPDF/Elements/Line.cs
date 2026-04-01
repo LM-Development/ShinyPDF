@@ -36,6 +36,8 @@ namespace OpenQuestPDF.Elements
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             if (Type == LineType.Vertical)
             {
                 Canvas.DrawRectangle(new Position(-Size/2, 0), new Size(Size, availableSpace.Height), Color);

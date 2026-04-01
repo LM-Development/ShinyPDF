@@ -66,8 +66,14 @@ namespace OpenQuestPDF.Elements
             
             if (hasEmptySpace && Alignment != HorizontalAlignment.Left)
                 row.RelativeItem(emptySpace);
-                
-            elements.ForEach(x => row.RelativeItem(x.Columns).Element(x.Child));
+
+            elements.ForEach(x =>
+            {
+                if (x.Child is IElement child)
+                {
+                    row.RelativeItem(x.Columns).Element(child);
+                }
+            });
 
             if (hasEmptySpace && Alignment != HorizontalAlignment.Right)
                 row.RelativeItem(emptySpace);

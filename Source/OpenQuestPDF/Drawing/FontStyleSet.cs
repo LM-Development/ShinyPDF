@@ -40,7 +40,7 @@ namespace OpenQuestPDF.Drawing
         };
 
         // Checks whether style a is a better match for the target then style b. Uses the CSS font style matching algorithm
-        internal static bool IsBetterMatch(SKFontStyle? target, SKFontStyle? a, SKFontStyle? b)
+        internal static bool IsBetterMatch(SKFontStyle target, SKFontStyle? a, SKFontStyle? b)
         {
             // A font is better than no font
             if (b == null) 

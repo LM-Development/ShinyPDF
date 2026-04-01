@@ -104,7 +104,10 @@ namespace OpenQuestPDF.Examples.Engine
         public void RenderDocument(Action<IDocumentContainer> content)
         {
             MaxPagesThreshold ??= ResultType == RenderingTestResult.Pdf ? 1000 : 10;
-            var document = new SimpleDocument(content, MaxPagesThreshold.Value, ApplyCaching, ApplyDebugging);
+            Settings.DocumentLayoutExceptionThreshold = MaxPagesThreshold.Value;
+            Settings.EnableCaching = ApplyCaching;
+            Settings.EnableDebugging = ApplyDebugging;
+            var document = new SimpleDocument(content);
 
             Render(document);
         }

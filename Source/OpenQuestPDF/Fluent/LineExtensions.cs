@@ -32,7 +32,8 @@ namespace OpenQuestPDF.Fluent
         public static void LineColor(this ILine descriptor, string value)
         {
             ColorValidator.Validate(value);
-            (descriptor as Line).Color = value;
+            if (descriptor is Line lineDescriptor)
+                lineDescriptor.Color = value;
         }
     }
 }

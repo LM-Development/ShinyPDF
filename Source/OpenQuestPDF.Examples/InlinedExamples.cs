@@ -27,7 +27,7 @@ namespace OpenQuestPDF.Examples
                         {
                             decoration.Before().Text(text =>
                             {
-                                text.DefaultTextStyle(TextStyle.Default.Size(20));
+                                text.DefaultTextStyle(TextStyle.Default.FontSize(20));
                                 
                                 text.CurrentPageNumber();
                                 text.Span(" / ");

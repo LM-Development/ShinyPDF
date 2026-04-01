@@ -9,7 +9,7 @@ namespace OpenQuestPDF.Elements
     
     internal class Canvas : Element, ICacheable
     {
-        public DrawOnCanvas Handler { get; set; }
+        public required DrawOnCanvas Handler { get; set; }
         
         internal override SpacePlan Measure(Size availableSpace)
         {

@@ -109,6 +109,8 @@ namespace OpenQuestPDF.Elements.Table
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             UpdateColumnsWidth(availableSpace.Width);
             var renderingCommands = PlanLayout(availableSpace);
 
@@ -190,7 +192,7 @@ namespace OpenQuestPDF.Elements.Table
             
             ICollection<TableCellRenderingCommand> GetRenderingCommands()
             {
-                var rowBottomOffsets = new DynamicDictionary<int, float>();
+                var rowBottomOffsets = new DynamicDictionary<int, float>(defaultValue: 0);
                 var commands = new List<TableCellRenderingCommand>();
                 
                 var cellsToTry = Enumerable

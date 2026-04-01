@@ -11,7 +11,7 @@ namespace OpenQuestPDF.Elements
 
         static Placeholder()
         {
-            ImageData = Helpers.Helpers.LoadEmbeddedResource("QuestPDF.Resources.ImagePlaceholder.png");
+            ImageData = Helpers.Helpers.LoadEmbeddedResource("OpenQuestPDF.Resources.ImagePlaceholder.png");
         }
 
         public void Compose(IContainer container)

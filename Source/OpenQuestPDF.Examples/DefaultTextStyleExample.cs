@@ -20,7 +20,7 @@ namespace OpenQuestPDF.Examples
                     container.Page(page =>
                     {
                         // all text in this set of pages has size 20
-                        page.DefaultTextStyle(TextStyle.Default.Size(20));
+                        page.DefaultTextStyle(TextStyle.Default.FontSize(20));
                     
                         page.Margin(20);
                         page.Size(PageSizes.A4);

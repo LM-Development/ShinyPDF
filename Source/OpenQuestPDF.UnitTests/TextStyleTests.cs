@@ -53,7 +53,12 @@ namespace OpenQuestPDF.UnitTests
                 }
             };
 
-            targetStyle.Should().BeEquivalentTo(expectedStyle);
+            targetStyle.Should().BeEquivalentTo(expectedStyle, options => options
+                .IncludingNestedObjects()
+                .IncludingInternalProperties()
+                .IncludingInternalFields()
+                .AllowingInfiniteRecursion()
+                .WithStrictOrdering());
         }
     }
 }

@@ -43,6 +43,8 @@ namespace OpenQuestPDF.Elements
         {
             if (Child == null)
                 return;
+            if (Canvas == null)
+                return;
 
             var internalSpace = InternalSpace(availableSpace);
             

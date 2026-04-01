@@ -99,6 +99,8 @@ namespace OpenQuestPDF.Elements.Text.Items
         // TODO: consider introducing text wrapping abstraction (basic, english-like, asian-like)
         private (int endIndex, int nextIndex)? WrapText(int startIndex, int endIndex, bool isFirstElementInLine)
         {
+            if (TextShapingResult == null)
+                throw new InvalidOperationException("Text shaping result is not available");
             // textLength - length of the part of the text that fits in available width (creating a line)
 
             // entire text fits, no need to wrap
@@ -136,13 +138,16 @@ namespace OpenQuestPDF.Elements.Text.Items
         
         public virtual void Draw(TextDrawingRequest request)
         {
+            if (TextShapingResult == null)
+                throw new InvalidOperationException("Text shaping result is not available");
+
             var fontMetrics = Style.ToFontMetrics();
 
             var glyphOffsetY = GetGlyphOffset();
             
             var textDrawingCommand = TextShapingResult.PositionText(request.StartIndex, request.EndIndex, Style);
 
-            if (Style.BackgroundColor != Colors.Transparent)
+            if (Style.BackgroundColor != null && Style.BackgroundColor != Colors.Transparent)
                 request.Canvas.DrawRectangle(new Position(0, request.TotalAscent), new Size(request.TextSize.Width, request.TextSize.Height), Style.BackgroundColor);
             
             if (textDrawingCommand.HasValue)
@@ -166,7 +171,7 @@ namespace OpenQuestPDF.Elements.Text.Items
             
             void DrawLine(float offset, float thickness)
             {
-                request.Canvas.DrawRectangle(new Position(0, offset), new Size(request.TextSize.Width, thickness), Style.Color);
+                request.Canvas.DrawRectangle(new Position(0, offset), new Size(request.TextSize.Width, thickness), Style.Color ?? TextStyle.LibraryDefault.Color!);
             }
 
             float GetGlyphOffset()

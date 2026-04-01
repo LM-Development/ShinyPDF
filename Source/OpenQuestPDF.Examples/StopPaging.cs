@@ -20,14 +20,14 @@ namespace OpenQuestPDF.Examples
                 {
                     container
                         .Padding(25)
-                        .DefaultTextStyle(TextStyle.Default.Size(14))
+                        .DefaultTextStyle(TextStyle.Default.FontSize(14))
                         .Decoration(decoration =>
                         {
                             decoration
                                 .Before()
                                 .Text(text =>
                                 {
-                                    text.DefaultTextStyle(TextStyle.Default.SemiBold().Color(Colors.Blue.Medium));
+                                    text.DefaultTextStyle(TextStyle.Default.SemiBold().FontColor(Colors.Blue.Medium));
                                     
                                     text.Span("Page ");
                                     text.CurrentPageNumber();

@@ -103,11 +103,6 @@ namespace OpenQuestPDF.Fluent
             lastTextBlock.Items.Add(item);
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the overload that returns a TextSpanDescriptor object which allows to specify text style.")]
-        public void Span(string? text, TextStyle style)
-        {
-            Span(text).Style(style);
-        }
         
         public TextSpanDescriptor Span(string? text)
         {
@@ -165,14 +160,6 @@ namespace OpenQuestPDF.Fluent
         {
             return PageNumber(x => x.GetLocation(PageContext.DocumentLocation)?.Length);
         }
-
-        [Obsolete("This element has been renamed since version 2022.3. Please use the BeginPageNumberOfSection method.")]
-        public void PageNumberOfLocation(string locationName, TextStyle? style = null)
-        {
-            var descriptor = BeginPageNumberOfSection(locationName);
-            if (style != null)
-                descriptor.Style(style);
-        }
         
         public TextPageNumberDescriptor BeginPageNumberOfSection(string locationName)
         {
@@ -212,13 +199,6 @@ namespace OpenQuestPDF.Fluent
             return new TextSpanDescriptor(x => textBlockItem.Style = x);
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the SectionLink method.")]
-        public void InternalLocation(string? text, string locationName, TextStyle? style = null)
-        {
-            var descriptor = SectionLink(text, locationName);
-            if (style != null)
-                descriptor.Style(style);
-        }
         
         public TextSpanDescriptor Hyperlink(string? text, string url)
         {
@@ -238,13 +218,6 @@ namespace OpenQuestPDF.Fluent
             return new TextSpanDescriptor(x => textBlockItem.Style = x);
         }
         
-        [Obsolete("This element has been renamed since version 2022.3. Please use the Hyperlink method.")]
-        public void ExternalLocation(string? text, string url, TextStyle? style = null)
-        {
-            var descriptor = Hyperlink(text, url);
-            if (style != null)
-                descriptor.Style(style);
-        }
         
         public IContainer Element()
         {
@@ -294,22 +267,13 @@ namespace OpenQuestPDF.Fluent
             descriptor.Compose(element);
         }
         
-        [Obsolete("This method has been deprecated since version 2022.3. Please use the overload that returns a TextSpanDescriptor object which allows to specify text style.")]
-        public static void Text(this IContainer element, object? text, TextStyle style)
-        {
-            element.Text(text).Style(style);
-        }
-
-        [Obsolete("This method has been deprecated since version 2022.12. Please use an overload where the text parameter is passed explicitly as a string.")]
-        public static TextSpanDescriptor Text(this IContainer element, object? text)
-        {
-            return element.Text(text?.ToString());
-        }
 
         public static TextSpanDescriptor Text(this IContainer element, string? text)
         {
-            var descriptor = (TextSpanDescriptor) null!;
+            TextSpanDescriptor? descriptor = null;
             element.Text(x => descriptor = x.Span(text));
+            if (descriptor == null)
+                throw new InvalidOperationException("Text descriptor cannot be null");
             return descriptor;
         }
     }

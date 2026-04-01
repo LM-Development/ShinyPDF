@@ -94,6 +94,11 @@ namespace OpenQuestPDF.Elements.Text
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
+            if (PageContext == null)
+                return;
+
             SetDefaultAlignment();
             
             var lines = DivideTextItemsIntoLines(availableSpace.Width, availableSpace.Height).ToList();
@@ -185,6 +190,9 @@ namespace OpenQuestPDF.Elements.Text
 
             TextLine GetNextLine()
             {
+                if (Canvas == null || PageContext == null)
+                    throw new ArgumentNullException("Canvas or PageContext is null");
+
                 var currentWidth = 0f;
 
                 var currentLineElements = new List<TextLineElement>();

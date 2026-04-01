@@ -49,7 +49,7 @@ namespace OpenQuestPDF.UnitTests
                     return container;
                 })
                 .MeasureElement(new Size(300, 200))
-                .CheckMeasureResult(SpacePlan.FullRender(300, 100));;
+                .CheckMeasureResult(SpacePlan.FullRender(300, 100));
         }
         
         SKImage GenerateImage(int width, int height)

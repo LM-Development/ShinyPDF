@@ -85,6 +85,8 @@ namespace OpenQuestPDF.Elements
 
         internal override void Draw(Size availableSpace)
         {
+            if (Canvas == null)
+                return;
             SetDefaultAlignment();
             
             var lines = Compose(availableSpace);

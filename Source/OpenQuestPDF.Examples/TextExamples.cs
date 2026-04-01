@@ -495,7 +495,7 @@ namespace OpenQuestPDF.Examples
 
                             text.EmptyLine();
 
-                            text.Hyperlink("Please visit QuestPDF website", "https://www.questpdf.com");
+                            text.Hyperlink("Please visit OpenQuestPDF GitHub repository", "https://www.github.com/LM-Development/OpenQuestPDF");
 
                             text.EmptyLine();
 
@@ -549,7 +549,7 @@ namespace OpenQuestPDF.Examples
                             {
                                 text.Line($"{i}: {Placeholders.Paragraph()}");
 
-                                text.Hyperlink("Please visit QuestPDF website. ", "https://www.questpdf.com");
+                                text.Hyperlink("Please visit OpenQuestPDF project page. ", "https://www.github.com/LM-Development/OpenQuestPDF");
                                 
                                 text.Span("This is page number ");
                                 text.CurrentPageNumber();
@@ -928,10 +928,14 @@ namespace OpenQuestPDF.Examples
                     var paint = new SKPaint
                     {
                         Color = SKColors.Red,
-                        TextSize = fontSize
+                    };
+
+                    var font = new SKFont
+                    {
+                        Size = fontSize,
                     };
                     
-                    var fontMetrics = paint.FontMetrics;
+                    var fontMetrics = font.Metrics;
 
                     var start = 0f;
                     var end = 0f;

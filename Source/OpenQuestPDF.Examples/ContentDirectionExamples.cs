@@ -111,7 +111,7 @@ namespace OpenQuestPDF.Examples
                                     var price = Placeholders.Random.NextDouble() * 100;
                                     
                                     table.Cell().Text(item);
-                                    table.Cell().Text(Placeholders.Random.Next(1, 10));
+                                    table.Cell().Text(Placeholders.Random.Next(1, 10).ToString());
                                     table.Cell().Text($"USD${price:F2}");
                                 }
 
