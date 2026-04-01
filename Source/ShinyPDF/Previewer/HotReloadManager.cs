@@ -1,0 +1,23 @@
+﻿#if NET6_0_OR_GREATER
+
+using System;
+
+[assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(ShinyPDF.Previewer.HotReloadManager))]
+
+namespace ShinyPDF.Previewer
+{
+    /// <summary>
+    /// Helper for subscribing to hot reload notifications.
+    /// </summary>
+    internal static class HotReloadManager
+    {
+        public static event EventHandler? UpdateApplicationRequested;
+
+        public static void UpdateApplication(Type[]? _)
+        {
+            UpdateApplicationRequested?.Invoke(null, EventArgs.Empty);
+        }
+    }
+}
+
+#endif
