@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ShinyPDF.Examples/ShinyPDF.Examples.csproj" />
+  <Project Path="ShinyPDF.UnitTests/ShinyPDF.UnitTests.csproj" />
+  <Project Path="ShinyPDF/ShinyPDF.csproj" />
+</Solution>

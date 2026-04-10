@@ -1,0 +1,23 @@
+{
+    "name": "ShinyPDF Tests",
+    "image": "mcr.microsoft.com/dotnet/sdk:10.0",
+    "postCreateCommand": "apt-get update && apt-get install -y libfontconfig1 libfreetype6 libpng16-16t64 libharfbuzz0b libjpeg-turbo8 libgif7 libwebp7 && dotnet restore src/ShinyPDF.sln",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "dotnet.defaultSolution": "src/ShinyPDF.sln"
+            },
+            "extensions": [
+                "ms-dotnettools.csharp",
+                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.vscode-dotnet-runtime",
+                "tomoki1207.pdf"
+            ]
+        }
+    },
+    "remoteEnv": {
+        "SHINYPDF_DEVCONTAINER": "true",
+        "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+        "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1"
+    }
+}

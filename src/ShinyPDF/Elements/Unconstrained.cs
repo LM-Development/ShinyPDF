@@ -1,0 +1,41 @@
+﻿using ShinyPDF.Drawing;
+using ShinyPDF.Infrastructure;
+
+namespace ShinyPDF.Elements
+{
+    internal class Unconstrained : ContainerElement, IContentDirectionAware, ICacheable
+    {
+        public ContentDirection ContentDirection { get; set; }
+        
+        internal override SpacePlan Measure(Size availableSpace)
+        {
+            var childSize = base.Measure(Size.Max);
+            
+            if (childSize.Type == SpacePlanType.PartialRender)
+                return SpacePlan.PartialRender(0, 0);
+            
+            if (childSize.Type == SpacePlanType.FullRender)
+                return SpacePlan.FullRender(0, 0);
+            
+            return childSize;
+        }
+
+        internal override void Draw(Size availableSpace)
+        {
+            if (Canvas == null)
+                return;
+            var measurement = base.Measure(Size.Max);
+            
+            if (measurement.Type == SpacePlanType.Wrap)
+                return;
+
+            var translate = ContentDirection == ContentDirection.RightToLeft
+                ? new Position(-measurement.Width, 0)
+                : Position.Zero;
+            
+            Canvas.Translate(translate);
+            base.Draw(measurement);
+            Canvas.Translate(translate.Reverse());
+        }
+    }
+}

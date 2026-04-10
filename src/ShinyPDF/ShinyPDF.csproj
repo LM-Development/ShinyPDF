@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Authors>LM Development</Authors>
+        <Company>LM IT Services AG</Company>
+        <PackageId>ShinyPDF</PackageId>
+        <PackageDescription>ShinyPDF is an open-source, modern and battle-tested library that can help you with generating PDF documents by offering friendly, discoverable and predictable C# fluent API. Easily generate PDF reports, invoices, exports, etc.</PackageDescription>
+        <RepositoryUrl>https://github.com/LM-Development/ShinyPDF.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Copyright>LM IT Services AG, ShinyPDF contributors</Copyright>
+        <PackageTags>pdf report file export generate generation tool create creation render portable document format quest html library converter open source free standard core</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net10.0</TargetFrameworks>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SkiaSharp" Version="3.119.0" />
+      <PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="ShinyPDF.UnitTests" />
+        <InternalsVisibleTo Include="ShinyPDF.Examples" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\ImagePlaceholder.png" />
+      <EmbeddedResource Include="Resources\Logo.png" />
+      <None Remove="ImagePlaceholder.png" />
+        
+      <None Include="Resources\Logo.png" Pack="true" PackagePath="\" />
+      <None Include="Resources\PackageReadme.md" Pack="true" PackagePath="\" />
+        
+      <None Remove="Resources\DefaultFonts\*\*.ttf" />
+      <EmbeddedResource Include="Resources\DefaultFonts\*\*.ttf" />
+    </ItemGroup>
+</Project>

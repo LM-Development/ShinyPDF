@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "test: ShinyPDF.UnitTests",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "src/ShinyPDF.UnitTests/ShinyPDF.UnitTests.csproj"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ]
+}
