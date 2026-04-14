@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="150" viewBox="30 25 140 150">
+  <path d="M65,100 L45,100 C37,100 30,93 30,85 L30,60 C30,40 45,25 65,25 L130,25 C138,25 145,32 145,40 L145,40 C145,48 138,55 130,55 L80,55 C72,55 65,62 65,70 Z" fill="#CC0000"/>
+  
+  <path d="M135,100 L155,100 C163,100 170,107 170,115 L170,140 C170,160 155,175 135,175 L70,175 C62,175 55,168 55,160 L55,160 C55,152 62,145 70,145 L120,145 C128,145 135,138 135,130 Z" fill="#CC0000"/>
+  
+  <rect x="65" y="55" width="70" height="90" rx="3" fill="white" stroke="#222" stroke-width="3"/>
+  
+  <path d="M115,55 L135,75 L135,55 Z" fill="#222"/>
+  
+  <rect x="65" y="95" width="70" height="18" fill="#CC0000"/>
+  <text x="100" y="108" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">PDF</text>
+</svg>
