@@ -11,7 +11,7 @@
         <Copyright>LM IT Services AG, ShinyPDF contributors</Copyright>
         <PackageTags>pdf report file export generate generation tool create creation render portable document format shiny library converter open source free standard core</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReleaseNotes Condition="Exists('$(MSBuildProjectDirectory)/release-notes.txt')">$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/release-notes.txt'))</PackageReleaseNotes>
+        <PackageReleaseNotes Condition="'$(PackageReleaseNotesFile)' != '' and Exists('$(PackageReleaseNotesFile)')">$([System.IO.File]::ReadAllText('$(PackageReleaseNotesFile)'))</PackageReleaseNotes>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net10.0</TargetFrameworks>
         <IncludeSymbols>true</IncludeSymbols>

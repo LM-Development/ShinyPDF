@@ -44,7 +44,7 @@ jobs:
         env:
           PACKAGE_RELEASE_NOTES_RAW: ${{ inputs.notes }}
         run: |
-          printf '%s' "$PACKAGE_RELEASE_NOTES_RAW" > "src/ShinyPDF/release-notes.txt"
+          printf '%s' "$PACKAGE_RELEASE_NOTES_RAW" > "$RUNNER_TEMP/release-notes.txt"
 
       - name: Pack NuGet package
         run: |
@@ -58,7 +58,8 @@ jobs:
             /p:PackageVersion=${{ inputs.version }} \
             /p:AssemblyVersion=${{ inputs.version }} \
             /p:FileVersion=${{ inputs.version }} \
-            /p:InformationalVersion=${{ inputs.version }}
+            /p:InformationalVersion=${{ inputs.version }} \
+            /p:PackageReleaseNotesFile="$RUNNER_TEMP/release-notes.txt"
 
       - name: NuGet login
         uses: NuGet/login@v1

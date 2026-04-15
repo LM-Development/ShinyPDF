@@ -40,8 +40,8 @@ jobs:
             --verbosity normal \
             --logger "trx;LogFileName=test-results.trx"
 
-      - name: Parse and comment test results
-        if: always()
+      - name: Parse and report test results
+        if: ${{ always() && !github.event.pull_request.head.repo.fork }}
         uses: dorny/test-reporter@v3
         with:
           name: Unit Test Results
