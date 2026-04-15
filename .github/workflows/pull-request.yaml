@@ -41,7 +41,7 @@ jobs:
             --logger "trx;LogFileName=test-results.trx"
 
       - name: Parse and report test results
-        if: ${{ always() && !github.event.pull_request.head.repo.fork }}
+        if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository }}
         uses: dorny/test-reporter@v3
         with:
           name: Unit Test Results
