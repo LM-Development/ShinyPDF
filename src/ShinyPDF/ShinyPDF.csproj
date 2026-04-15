@@ -3,14 +3,15 @@
         <Authors>LM Development</Authors>
         <Company>LM IT Services AG</Company>
         <PackageId>ShinyPDF</PackageId>
-        <PackageReadmeFile>./Resources/PackageReadme.md</PackageReadmeFile>
+        <PackageReadmeFile>PackageReadme.md</PackageReadmeFile>
         <PackageDescription>ShinyPDF is an open-source, modern library that can help you with generating PDF documents by offering friendly, discoverable and predictable C# fluent API. Easily generate PDF reports, invoices, exports, etc.</PackageDescription>
-        <PackageIcon>./Resources/Logo.png</PackageIcon>
+        <PackageIcon>Logo.png</PackageIcon>
         <RepositoryUrl>https://github.com/LM-Development/ShinyPDF.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Copyright>LM IT Services AG, ShinyPDF contributors</Copyright>
         <PackageTags>pdf report file export generate generation tool create creation render portable document format shiny library converter open source free standard core</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes Condition="Exists('$(MSBuildProjectDirectory)/release-notes.txt')">$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/release-notes.txt'))</PackageReleaseNotes>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net10.0</TargetFrameworks>
         <IncludeSymbols>true</IncludeSymbols>

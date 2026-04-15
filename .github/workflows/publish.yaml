@@ -27,7 +27,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '10.0.x'
+          global-json-file: src/global.json
 
       - name: Build
         run: |
@@ -39,6 +39,12 @@ jobs:
             /p:FileVersion=${{ inputs.version }} \
             /p:InformationalVersion=${{ inputs.version }}
 
+      - name: Write package release notes file
+        env:
+          PACKAGE_RELEASE_NOTES_RAW: ${{ inputs.notes }}
+        run: |
+          printf '%s' "$PACKAGE_RELEASE_NOTES_RAW" > "src/ShinyPDF/release-notes.txt"
+
       - name: Pack NuGet package
         run: |
           dotnet pack \
@@ -49,8 +55,16 @@ jobs:
             /p:PackageVersion=${{ inputs.version }} \
             /p:AssemblyVersion=${{ inputs.version }} \
             /p:FileVersion=${{ inputs.version }} \
-            /p:InformationalVersion=${{ inputs.version }} \
-            /p:PackageReleaseNotes="${{ inputs.notes }}"
+            /p:InformationalVersion=${{ inputs.version }}
 
       - name: Publish to NuGet
-        run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        run: |
+          dotnet nuget push "*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+          dotnet nuget push "*.snupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
