@@ -30,6 +30,7 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v6
         with:
           fallback-version: 1.0.0
+          skip-commit: true
         
 
       - name: Create GitHub release
