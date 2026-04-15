@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.changelog.outputs.version }}
+      clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
+      skipped: ${{ steps.changelog.outputs.skipped }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Generate version from Conventional Commits
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v6
+        with:
+          fallback-version: 1.0.0
+        
+
+      - name: Create GitHub release
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.version }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+
+  publish:
+    name: Publish to NuGet
+    needs: release
+    if: ${{ needs.release.result == 'success' && needs.release.outputs.skipped == 'false' }}
+    uses: ./.github/workflows/publish.yaml
+    secrets: inherit
+    with:
+      version: ${{ needs.release.outputs.version }}
+      notes: ${{ needs.release.outputs.clean_changelog }}

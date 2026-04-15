@@ -1,0 +1,50 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: src/global.json
+
+      - name: Restore dependencies
+        run: dotnet restore src/ShinyPDF.slnx
+
+      - name: Build
+        run: dotnet build src/ShinyPDF.slnx --configuration Release --no-restore
+
+      - name: Run unit tests
+        run: |
+          dotnet test \
+            src/ShinyPDF.UnitTests/ShinyPDF.UnitTests.csproj \
+            --configuration Release \
+            --no-build \
+            --results-directory src/ShinyPDF.UnitTests/TestResults \
+            --verbosity normal \
+            --logger "trx;LogFileName=test-results.trx"
+
+      - name: Parse and report test results
+        if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: Unit Test Results
+          path: 'src/ShinyPDF.UnitTests/TestResults/test-results.trx'
+          reporter: 'dotnet-trx'
+          fail-on-error: false
