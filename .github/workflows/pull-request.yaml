@@ -36,6 +36,7 @@ jobs:
             src/ShinyPDF.UnitTests/ShinyPDF.UnitTests.csproj \
             --configuration Release \
             --no-build \
+            --results-directory src/ShinyPDF.UnitTests/TestResults \
             --verbosity normal \
             --logger "trx;LogFileName=test-results.trx"
 
