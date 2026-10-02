@@ -2,7 +2,7 @@
 
 namespace ShinyPDF.UnitTests.TestEngine.Operations
 {
-    public class ChildDrawOperation : OperationBase
+    public record ChildDrawOperation : OperationBase
     {
         public string ChildId { get; }
         public Size Input { get; }

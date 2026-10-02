@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ShinyPDF.Drawing;
 using SkiaSharp;
 using static SkiaSharp.SKFontStyleSlant;
@@ -16,8 +15,8 @@ namespace ShinyPDF.UnitTests
                 var currentStyle = styles[i];
                 var nextStyle = styles[i + 1];
                 
-                FontStyleSet.IsBetterMatch(target, currentStyle, nextStyle).Should().BeTrue();
-                FontStyleSet.IsBetterMatch(target, nextStyle, currentStyle).Should().BeFalse();
+                Assert.That(FontStyleSet.IsBetterMatch(target, currentStyle, nextStyle), Is.True);
+                Assert.That(FontStyleSet.IsBetterMatch(target, nextStyle, currentStyle), Is.False);
             }
         }
 

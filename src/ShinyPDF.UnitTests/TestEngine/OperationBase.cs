@@ -1,6 +1,6 @@
 ﻿namespace ShinyPDF.UnitTests.TestEngine
 {
-    public abstract class OperationBase
+    public abstract record OperationBase
     {
         
     }

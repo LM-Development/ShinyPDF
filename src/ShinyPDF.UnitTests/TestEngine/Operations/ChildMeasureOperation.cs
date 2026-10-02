@@ -3,7 +3,7 @@ using ShinyPDF.Infrastructure;
 
 namespace ShinyPDF.UnitTests.TestEngine.Operations
 {
-    internal class ChildMeasureOperation : OperationBase
+    internal record ChildMeasureOperation : OperationBase
     {
         public string ChildId { get; }
         public Size Input { get; }

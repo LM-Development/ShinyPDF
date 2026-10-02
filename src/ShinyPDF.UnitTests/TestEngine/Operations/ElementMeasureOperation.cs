@@ -2,7 +2,7 @@
 
 namespace ShinyPDF.UnitTests.TestEngine.Operations
 {
-    public class ElementMeasureOperation : OperationBase
+    public record ElementMeasureOperation : OperationBase
     {
         public ElementMeasureOperation(Size input)
         {

@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ShinyPDF.Drawing;
 using ShinyPDF.Elements;
 using ShinyPDF.Infrastructure;
@@ -66,7 +65,7 @@ namespace ShinyPDF.UnitTests
                 .ExpectCanvasDrawImage(Position.Zero, new Size(400, 300))
                 .CheckDrawResult();
             
-            passedSize.Should().BeEquivalentTo(new Size(400, 300));
+            Assert.That(passedSize, Is.EqualTo(new Size(400, 300)));
         }
         
         byte[] GenerateImage(Size size)

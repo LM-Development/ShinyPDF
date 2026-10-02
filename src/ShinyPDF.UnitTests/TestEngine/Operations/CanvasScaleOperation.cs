@@ -1,6 +1,6 @@
 ﻿namespace ShinyPDF.UnitTests.TestEngine.Operations
 {
-    public class CanvasScaleOperation : OperationBase
+    public record CanvasScaleOperation : OperationBase
     {
         public float ScaleX { get; }
         public float ScaleY { get; }
