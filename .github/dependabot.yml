@@ -19,7 +19,6 @@ updates:
           - nunit
           - NUnit3TestAdapter
           - Microsoft.NET.Test.Sdk
-          - FluentAssertions
 
   - package-ecosystem: github-actions
     directory: /
