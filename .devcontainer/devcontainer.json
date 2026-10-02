@@ -1,11 +1,11 @@
 {
     "name": "ShinyPDF Tests",
     "image": "mcr.microsoft.com/dotnet/sdk:10.0",
-    "postCreateCommand": "apt-get update && apt-get install -y libfontconfig1 libfreetype6 libpng16-16t64 libharfbuzz0b libjpeg-turbo8 libgif7 libwebp7 && dotnet restore src/ShinyPDF.sln",
+    "postCreateCommand": "apt-get update && apt-get install -y libfontconfig1 libfreetype6 libpng16-16t64 libharfbuzz0b libjpeg-turbo8 libgif7 libwebp7 && dotnet restore src/ShinyPDF.slnx",
     "customizations": {
         "vscode": {
             "settings": {
-                "dotnet.defaultSolution": "src/ShinyPDF.sln"
+                "dotnet.defaultSolution": "src/ShinyPDF.slnx"
             },
             "extensions": [
                 "ms-dotnettools.csharp",
