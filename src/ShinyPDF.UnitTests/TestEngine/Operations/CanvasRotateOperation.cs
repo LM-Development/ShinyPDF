@@ -1,6 +1,6 @@
 ﻿namespace ShinyPDF.UnitTests.TestEngine.Operations
 {
-    public class CanvasRotateOperation : OperationBase
+    public record CanvasRotateOperation : OperationBase
     {
         public float Angle { get; }
 

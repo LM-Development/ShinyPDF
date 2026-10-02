@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ShinyPDF.Elements;
 using ShinyPDF.Fluent;
 using ShinyPDF.UnitTests.TestEngine;

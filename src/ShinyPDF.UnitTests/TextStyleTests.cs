@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using ShinyPDF.Fluent;
 using ShinyPDF.Helpers;
@@ -54,12 +55,23 @@ namespace ShinyPDF.UnitTests
                 }
             };
 
-            targetStyle.Should().BeEquivalentTo(expectedStyle, options => options
-                .IncludingNestedObjects()
-                .IncludingInternalProperties()
-                .IncludingInternalFields()
-                .AllowingInfiniteRecursion()
-                .WithStrictOrdering());
+            Assert.That(targetStyle, Is.EqualTo(expectedStyle), () => $"Expected: {Describe(expectedStyle)}\nBut was:  {Describe(targetStyle)}");
+        }
+
+        // TextStyle members are internal, so the record's ToString does not show them
+        private static string Describe(TextStyle style)
+        {
+            if (style == null)
+                return "null";
+
+            var members = typeof(TextStyle)
+                .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Where(x => x.Name != "EqualityContract")
+                .Select(x => x.Name == nameof(TextStyle.Fallback)
+                    ? $"{x.Name} = {{ {Describe(style.Fallback)} }}"
+                    : $"{x.Name} = {x.GetValue(style) ?? "null"}");
+
+            return string.Join(", ", members);
         }
     }
 }

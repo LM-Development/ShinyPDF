@@ -2,7 +2,7 @@
 
 namespace ShinyPDF.UnitTests.TestEngine.Operations
 {
-    internal class CanvasDrawImageOperation : OperationBase
+    internal record CanvasDrawImageOperation : OperationBase
     {
         public Position Position { get; }
         public Size Size { get; }

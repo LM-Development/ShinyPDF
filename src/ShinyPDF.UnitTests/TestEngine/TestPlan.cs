@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using FluentAssertions;
 using NUnit.Framework;
 using ShinyPDF.Drawing;
 using ShinyPDF.Elements;
@@ -259,7 +258,7 @@ namespace ShinyPDF.UnitTests.TestEngine
             expected.InjectDependencies(null, canvas);
             var expectedMeasure = expected.Measure(availableSpace.Value);
             
-            valueMeasure.Should().BeEquivalentTo(expectedMeasure);
+            Assert.That(valueMeasure, Is.EqualTo(expectedMeasure));
         }
         
         private static void CompareDrawOperations(Element value, Element expected, Size? availableSpace = null)
@@ -283,9 +282,7 @@ namespace ShinyPDF.UnitTests.TestEngine
             Assert.That(expectedCanvas.Operations.Count, Is.GreaterThan(0), "expectedCanvas.Operations ist leer");
 
             // Vergleiche die Operationen
-            valueCanvas.Operations.Should().BeEquivalentTo(expectedCanvas.Operations, options => options
-                .PreferringRuntimeMemberTypes()
-                .WithTracing());
+            Assert.That(valueCanvas.Operations, Is.EqualTo(expectedCanvas.Operations));
         }
     }
 }
