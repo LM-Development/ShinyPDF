@@ -14,7 +14,7 @@ The single orientation file for any AI agent (Claude Code, Copilot, Codex, ...) 
 - The public API (`ShinyPDF.Fluent`, public types) is used by consumers: breaking changes need a `BREAKING CHANGE:` commit footer (major release).
 - SkiaSharp, HarfBuzzSharp and their `NativeAssets.*` packages must stay on matching versions, including the Linux ones in `Directory.Build.props`.
 - Native asset references in `Directory.Build.props` keep `PrivateAssets="all"` so they never become package dependencies.
-- The `Grid` element is deprecated; use `Table` or `Row`/`Column` in new code and examples.
+- The `Grid` element's `[Obsolete]` marker is inherited from the QuestPDF base, not a ShinyPDF decision; it may be reintroduced. Do not remove `Grid` or migrate existing usages unprompted; its CS0618 warnings are expected.
 - Use NUnit `Assert.That` in tests (no FluentAssertions).
 
 ## Commands
