@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      # Managed and native packages must stay on matching versions
+      skiasharp:
+        patterns:
+          - SkiaSharp*
+          - HarfBuzzSharp*
+          - Svg.Skia
+      test-tooling:
+        patterns:
+          - nunit
+          - NUnit3TestAdapter
+          - Microsoft.NET.Test.Sdk
+          - FluentAssertions
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - "*"
