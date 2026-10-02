@@ -13,6 +13,20 @@ ShinyPDF is a modern open-source .NET library for PDF document generation. Offer
 🔗 No proprietary template language. Use modern .NET features, reusable abstractions, and the tools you already trust.
 
 
+## Installation
+
+```bash
+dotnet add package ShinyPDF
+```
+
+On Linux, also add the native assets for SkiaSharp and HarfBuzzSharp:
+
+```bash
+dotnet add package SkiaSharp.NativeAssets.Linux
+dotnet add package HarfBuzzSharp.NativeAssets.Linux
+```
+
+
 ## Simplicity is the key
 
 How easy it is to start and prototype with ShinyPDF? Really easy thanks to its minimal API! Please analyse the code below that generates basic PDF document:
@@ -29,7 +43,7 @@ Document.Create(container =>
     {
         page.Size(PageSizes.A4);
         page.Margin(2, Unit.Centimetre);
-        page.Background(Colors.White);
+        page.PageColor(Colors.White);
         page.DefaultTextStyle(x => x.FontSize(20));
         
         page.Header()
