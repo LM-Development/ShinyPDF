@@ -119,8 +119,14 @@ namespace ShinyPDF.Elements.Text
             {
                 return FontManager.GetRegisteredFontFamilies()
                     .Select(FontManager.MatchFamily)
-                    .Where(x => x != null && x.ContainsGlyph(codepoint))
+                    .Where(x => x != null && ContainsGlyph(x, codepoint))
                     .Select(x => x!.FamilyName);
+            }
+
+            static bool ContainsGlyph(SKTypeface typeface, int codepoint)
+            {
+                using var font = typeface.ToFont();
+                return font.ContainsGlyph(codepoint);
             }
         }
 

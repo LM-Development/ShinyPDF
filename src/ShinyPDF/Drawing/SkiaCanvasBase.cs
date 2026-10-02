@@ -39,7 +39,7 @@ namespace ShinyPDF.Drawing
         public void DrawImage(SKImage image, Position vector, Size size)
         {
             if (Canvas == null) return;
-            Canvas.DrawImage(image, new SKRect(vector.X, vector.Y, size.Width, size.Height));
+            Canvas.DrawImage(image, new SKRect(vector.X, vector.Y, size.Width, size.Height), SKSamplingOptions.Default);
         }
 
         public void DrawHyperlink(string url, Size size)
