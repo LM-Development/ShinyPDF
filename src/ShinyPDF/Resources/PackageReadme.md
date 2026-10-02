@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/LM-Development/ShinyPDF/main/docs/img/logo.svg" height="25" /> ShinyPDF
+# ![ShinyPDF logo](https://raw.githubusercontent.com/LM-Development/ShinyPDF/main/docs/img/logo-48.png) ShinyPDF
 
 ShinyPDF is a modern open-source .NET library for PDF document generation. Offering comprehensive layout engine powered by concise and discoverable C# Fluent API. Shiny PDF is based on the latest fully open source version of [QuestPDF](https://github.com/QuestPDF/QuestPDF).
 
