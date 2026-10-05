@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ShinyPDF\ShinyPDF.csproj" />
+      <ProjectReference Include="..\ShinyPDF.Markdown\ShinyPDF.Markdown.csproj" />
     </ItemGroup>
 
     <ItemGroup>

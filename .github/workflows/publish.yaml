@@ -32,13 +32,15 @@ jobs:
 
       - name: Build
         run: |
-          dotnet build \
-            --configuration Release \
-            src/ShinyPDF/ShinyPDF.csproj \
-            /p:Version=${{ inputs.version }} \
-            /p:AssemblyVersion=${{ inputs.version }} \
-            /p:FileVersion=${{ inputs.version }} \
-            /p:InformationalVersion=${{ inputs.version }}
+          for project in src/ShinyPDF/ShinyPDF.csproj src/ShinyPDF.Markdown/ShinyPDF.Markdown.csproj; do
+            dotnet build \
+              --configuration Release \
+              "$project" \
+              /p:Version=${{ inputs.version }} \
+              /p:AssemblyVersion=${{ inputs.version }} \
+              /p:FileVersion=${{ inputs.version }} \
+              /p:InformationalVersion=${{ inputs.version }}
+          done
 
       - name: Write package release notes file
         env:
@@ -46,20 +48,22 @@ jobs:
         run: |
           printf '%s' "$PACKAGE_RELEASE_NOTES_RAW" > "$RUNNER_TEMP/release-notes.txt"
 
-      - name: Pack NuGet package
+      - name: Pack NuGet packages
         run: |
-          dotnet pack \
-            --configuration Release \
-            --no-build \
-            --no-restore \
-            --output . \
-            src/ShinyPDF/ShinyPDF.csproj \
-            /p:Version=${{ inputs.version }} \
-            /p:PackageVersion=${{ inputs.version }} \
-            /p:AssemblyVersion=${{ inputs.version }} \
-            /p:FileVersion=${{ inputs.version }} \
-            /p:InformationalVersion=${{ inputs.version }} \
-            /p:PackageReleaseNotesFile="$RUNNER_TEMP/release-notes.txt"
+          for project in src/ShinyPDF/ShinyPDF.csproj src/ShinyPDF.Markdown/ShinyPDF.Markdown.csproj; do
+            dotnet pack \
+              --configuration Release \
+              --no-build \
+              --no-restore \
+              --output . \
+              "$project" \
+              /p:Version=${{ inputs.version }} \
+              /p:PackageVersion=${{ inputs.version }} \
+              /p:AssemblyVersion=${{ inputs.version }} \
+              /p:FileVersion=${{ inputs.version }} \
+              /p:InformationalVersion=${{ inputs.version }} \
+              /p:PackageReleaseNotesFile="$RUNNER_TEMP/release-notes.txt"
+          done
 
       - name: NuGet login
         uses: NuGet/login@v1

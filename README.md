@@ -94,3 +94,17 @@ The result:
 <img src="./docs/img/example-hello-pdf.png" width="400" alt="Generated PDF page with a blue 'Hello PDF!' heading, a paragraph of placeholder text, a gradient placeholder image and a 'Page 1' footer" />
 
 `Placeholders` generates sample text and images, which is handy while designing a layout. More examples are in [src/ShinyPDF.Examples](src/ShinyPDF.Examples).
+
+## Markdown
+
+The `ShinyPDF.Markdown` package renders Markdown into any container:
+
+```bash
+dotnet add package ShinyPDF.Markdown
+```
+
+```csharp
+page.Content().Markdown("# Release notes\n\nVersion **2.1** adds *Markdown* support.");
+```
+
+See [Render Markdown](docs/how-to/render-markdown.md) for styling options and the supported syntax.
