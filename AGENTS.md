@@ -4,9 +4,9 @@ The single orientation file for any AI agent (Claude Code, Copilot, Codex, ...) 
 
 ## Project
 
-- Status: active. Open-source library, published to NuGet as `ShinyPDF`. Fork of the last MIT-licensed version of QuestPDF.
+- Status: active. Open-source library, published to NuGet as `ShinyPDF` and `ShinyPDF.Markdown` (same version, released together). Fork of the last MIT-licensed version of QuestPDF.
 - Stack: C# / .NET 10 (SDK pinned in `src/global.json`), SkiaSharp + HarfBuzzSharp for rendering, NUnit for tests.
-- Layout: `src/ShinyPDF` (library: `Fluent` = public API, `Elements`, `Drawing`, `Infrastructure`, `Helpers`), `src/ShinyPDF.UnitTests` (fast tests with an operation-recording test engine), `src/ShinyPDF.Examples` (NUnit tests that render real PDFs/images).
+- Layout: `src/ShinyPDF` (library: `Fluent` = public API, `Elements`, `Drawing`, `Infrastructure`, `Helpers`), `src/ShinyPDF.Markdown` (Markdown element on top of the public API, parsing via Markdig), `src/ShinyPDF.UnitTests` (fast tests with an operation-recording test engine), `src/ShinyPDF.Examples` (NUnit tests that render real PDFs/images).
 
 ## Key rules
 
@@ -24,6 +24,7 @@ dotnet build src/ShinyPDF.slnx                                    # build all pr
 dotnet test src/ShinyPDF.UnitTests/ShinyPDF.UnitTests.csproj      # unit tests (seconds, what CI runs)
 dotnet test src/ShinyPDF.Examples/ShinyPDF.Examples.csproj        # example renders (~8 min, writes PDFs/PNGs to bin/)
 dotnet pack src/ShinyPDF/ShinyPDF.csproj -c Release -o out        # local NuGet package
+dotnet pack src/ShinyPDF.Markdown/ShinyPDF.Markdown.csproj -c Release -o out  # local Markdown package
 ```
 
 Example tests marked `.ShowResults()` try to open the generated file in a viewer; run them only when rendering changed.
@@ -38,4 +39,4 @@ On Linux (or with `SHINYPDF_DEVCONTAINER=true`) the Linux native assets are adde
 
 ## Current focus
 
-Open issues: user documentation (#9, #22), more underline options (#11), template designer app (#12).
+Open issues: more underline options (#11), template designer app (#12). Markdown follow-ups not yet built: tables, images, task lists.

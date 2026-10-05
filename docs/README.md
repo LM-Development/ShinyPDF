@@ -18,6 +18,7 @@ Recipes for specific tasks.
 - [Headers, footers and page numbers](how-to/headers-footers-page-numbers.md): page setup, repeating content and numbering
 - [Use custom fonts](how-to/fonts.md): register fonts, fallback for missing glyphs, right-to-left text
 - [Build reusable components](how-to/reusable-components.md): components, extension methods and dynamic content
+- [Render Markdown](how-to/render-markdown.md): the `ShinyPDF.Markdown` package, styling options and supported syntax
 - [Debug layout issues](how-to/debug-layout-issues.md): find out why content does not fit or a layout fails
 - [Deploy on Linux and Docker](how-to/deploy-on-linux.md): native assets, system libraries and fonts
 
