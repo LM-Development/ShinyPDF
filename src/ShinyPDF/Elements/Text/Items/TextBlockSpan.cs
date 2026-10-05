@@ -156,21 +156,10 @@ namespace ShinyPDF.Elements.Text.Items
             // draw underline
             if ((Style.HasUnderline ?? false) && fontMetrics.UnderlinePosition.HasValue)
             {
-                if (Style.FontPosition == FontPosition.Superscript)
-                {
-                    var normalMetrics = Style
-                        .Mutate(TextStyleProperty.FontPosition, FontPosition.Normal)
-                        .ToFontMetrics();
+                var underline = GetUnderlinePlacement(fontMetrics.UnderlinePosition.Value, fontMetrics.UnderlineThickness);
 
-                    if (normalMetrics.UnderlinePosition.HasValue)
-                    {
-                        DrawLine(normalMetrics.UnderlinePosition.Value, normalMetrics.UnderlineThickness ?? 1);
-                    }
-                }
-                else
-                {
-                    DrawLine(fontMetrics.UnderlinePosition.Value + glyphOffsetY, fontMetrics.UnderlineThickness ?? 1);
-                }
+                if (underline.HasValue)
+                    DrawLine(underline.Value.offset, underline.Value.thickness);
             }
 
             // draw stroke
@@ -184,7 +173,38 @@ namespace ShinyPDF.Elements.Text.Items
 
             void DrawLine(float offset, float thickness)
             {
-                request.Canvas.DrawRectangle(new Position(0, offset), new Size(request.TextSize.Width, thickness), Style.Color ?? TextStyle.LibraryDefault.Color!);
+                thickness = Style.DecorationThickness ?? thickness;
+                var color = Style.DecorationColor ?? Style.Color ?? TextStyle.LibraryDefault.Color!;
+                var decorationStyle = Style.DecorationStyle ?? TextDecorationStyle.Solid;
+
+                if (decorationStyle == TextDecorationStyle.Solid)
+                    request.Canvas.DrawRectangle(new Position(0, offset), new Size(request.TextSize.Width, thickness), color);
+                else
+                    request.Canvas.DrawTextDecoration(new Position(0, offset), request.TextSize.Width, thickness, color, decorationStyle);
+            }
+
+            (float offset, float thickness)? GetUnderlinePlacement(float glyphUnderlinePosition, float? glyphUnderlineThickness)
+            {
+                var underlinePosition = Style.UnderlinePosition ?? UnderlinePosition.Auto;
+
+                var alignWithBaseline = Style.FontPosition switch
+                {
+                    FontPosition.Superscript => underlinePosition != UnderlinePosition.BelowGlyphs,
+                    FontPosition.Subscript => underlinePosition == UnderlinePosition.Baseline,
+                    _ => false
+                };
+
+                if (!alignWithBaseline)
+                    return (glyphUnderlinePosition + glyphOffsetY, glyphUnderlineThickness ?? 1);
+
+                var normalMetrics = Style
+                    .Mutate(TextStyleProperty.FontPosition, FontPosition.Normal)
+                    .ToFontMetrics();
+
+                if (!normalMetrics.UnderlinePosition.HasValue)
+                    return null;
+
+                return (normalMetrics.UnderlinePosition.Value, normalMetrics.UnderlineThickness ?? 1);
             }
 
             float GetGlyphOffset()

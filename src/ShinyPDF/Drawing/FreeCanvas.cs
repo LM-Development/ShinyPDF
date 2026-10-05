@@ -38,7 +38,12 @@ namespace ShinyPDF.Drawing
 
         public void DrawRectangle(Position vector, Size size, string color)
         {
-            
+
+        }
+
+        public void DrawTextDecoration(Position vector, float width, float thickness, string color, TextDecorationStyle style)
+        {
+
         }
 
         public void DrawText(SKTextBlob skTextBlob, Position position, TextStyle style)

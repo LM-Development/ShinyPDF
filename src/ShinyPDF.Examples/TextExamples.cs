@@ -345,6 +345,85 @@ namespace ShinyPDF.Examples
         }
 
         [Test]
+        public void SuperscriptSubscript_UnderlinePosition()
+        {
+            RenderingTest
+               .Create()
+               .PageSize(800, 300)
+               .ProduceImages()
+               .ShowResults()
+               .Render(container =>
+               {
+                   container
+                        .Padding(25)
+                        .DefaultTextStyle(x => x.FontSize(30).Underline())
+                        .Column(column =>
+                        {
+                            column.Spacing(25);
+
+                            column.Item().Text(text =>
+                            {
+                                text.Span("Auto: E = mc");
+                                text.Span("2").Superscript();
+                                text.Span(", H");
+                                text.Span("2").Subscript();
+                                text.Span("O");
+                            });
+
+                            column.Item().Text(text =>
+                            {
+                                text.DefaultTextStyle(x => x.UnderlineAtBaseline());
+
+                                text.Span("Baseline: E = mc");
+                                text.Span("2").Superscript();
+                                text.Span(", H");
+                                text.Span("2").Subscript();
+                                text.Span("O");
+                            });
+
+                            column.Item().Text(text =>
+                            {
+                                text.DefaultTextStyle(x => x.UnderlineBelowGlyphs());
+
+                                text.Span("Below glyphs: E = mc");
+                                text.Span("2").Superscript();
+                                text.Span(", H");
+                                text.Span("2").Subscript();
+                                text.Span("O");
+                            });
+                        });
+               });
+        }
+
+        [Test]
+        public void DecorationStyles()
+        {
+            RenderingTest
+               .Create()
+               .PageSize(600, 420)
+               .ProduceImages()
+               .ShowResults()
+               .Render(container =>
+               {
+                   container
+                        .Padding(25)
+                        .DefaultTextStyle(x => x.FontSize(24))
+                        .Column(column =>
+                        {
+                            column.Spacing(15);
+
+                            column.Item().Text("Solid underline").Underline();
+                            column.Item().Text("Double underline").Underline().DecorationDouble();
+                            column.Item().Text("Dotted underline").Underline().DecorationDotted();
+                            column.Item().Text("Dashed underline").Underline().DecorationDashed();
+                            column.Item().Text("Wavy red underline").Underline().DecorationWavy().DecorationColor(Colors.Red.Medium);
+                            column.Item().Text("Thick blue underline").Underline().DecorationThickness(3).DecorationColor(Colors.Blue.Medium);
+                            column.Item().Text("Dashed strikethrough").Strikethrough().DecorationDashed();
+                        });
+               });
+        }
+
+        [Test]
         public void ParagraphSpacing()
         {
             RenderingTest

@@ -68,6 +68,89 @@ namespace ShinyPDF.Fluent
             return style.Mutate(TextStyleProperty.WrapAnywhere, value);
         }
 
+        #region Decoration
+
+        /// <summary>
+        /// Sets the color of underline and strikethrough lines. By default, the text color is used.
+        /// </summary>
+        public static TextStyle DecorationColor(this TextStyle style, string value)
+        {
+            ColorValidator.Validate(value);
+            return style.Mutate(TextStyleProperty.DecorationColor, value);
+        }
+
+        /// <summary>
+        /// Sets the thickness of underline and strikethrough lines, in points. By default, the thickness provided by the font is used.
+        /// </summary>
+        public static TextStyle DecorationThickness(this TextStyle style, float value)
+        {
+            if (value <= 0)
+                throw new ArgumentException("Decoration thickness must be greater than 0.");
+
+            return style.Mutate(TextStyleProperty.DecorationThickness, value);
+        }
+
+        public static TextStyle DecorationSolid(this TextStyle style)
+        {
+            return style.DecorationStyle(TextDecorationStyle.Solid);
+        }
+
+        public static TextStyle DecorationDouble(this TextStyle style)
+        {
+            return style.DecorationStyle(TextDecorationStyle.Double);
+        }
+
+        public static TextStyle DecorationDotted(this TextStyle style)
+        {
+            return style.DecorationStyle(TextDecorationStyle.Dotted);
+        }
+
+        public static TextStyle DecorationDashed(this TextStyle style)
+        {
+            return style.DecorationStyle(TextDecorationStyle.Dashed);
+        }
+
+        public static TextStyle DecorationWavy(this TextStyle style)
+        {
+            return style.DecorationStyle(TextDecorationStyle.Wavy);
+        }
+
+        private static TextStyle DecorationStyle(this TextStyle style, TextDecorationStyle decorationStyle)
+        {
+            return style.Mutate(TextStyleProperty.DecorationStyle, decorationStyle);
+        }
+
+        /// <summary>
+        /// Default. Superscript underlines stay on the baseline, subscript underlines follow the lowered glyphs.
+        /// </summary>
+        public static TextStyle UnderlinePositionAuto(this TextStyle style)
+        {
+            return style.UnderlinePosition(Infrastructure.UnderlinePosition.Auto);
+        }
+
+        /// <summary>
+        /// Draws sub/superscript underlines where they would be for normal text, aligned with the surrounding text.
+        /// </summary>
+        public static TextStyle UnderlineAtBaseline(this TextStyle style)
+        {
+            return style.UnderlinePosition(Infrastructure.UnderlinePosition.Baseline);
+        }
+
+        /// <summary>
+        /// Draws sub/superscript underlines directly below the shifted glyphs.
+        /// </summary>
+        public static TextStyle UnderlineBelowGlyphs(this TextStyle style)
+        {
+            return style.UnderlinePosition(Infrastructure.UnderlinePosition.BelowGlyphs);
+        }
+
+        private static TextStyle UnderlinePosition(this TextStyle style, UnderlinePosition position)
+        {
+            return style.Mutate(TextStyleProperty.UnderlinePosition, position);
+        }
+
+        #endregion
+
         #region Weight
         
         public static TextStyle Weight(this TextStyle style, FontWeight weight)

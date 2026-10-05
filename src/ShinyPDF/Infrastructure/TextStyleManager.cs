@@ -17,6 +17,10 @@ namespace ShinyPDF.Infrastructure
         IsItalic,
         HasStrikethrough,
         HasUnderline,
+        DecorationColor,
+        DecorationThickness,
+        DecorationStyle,
+        UnderlinePosition,
         WrapAnywhere,
         Fallback,
         Direction
@@ -182,7 +186,59 @@ namespace ShinyPDF.Infrastructure
 
                 return origin with { HasUnderline = castedValue };
             }
-            
+
+            if (property == TextStyleProperty.DecorationColor)
+            {
+                if (!overrideValue && origin.DecorationColor != null)
+                    return origin;
+
+                var castedValue = (string?)value;
+
+                if (origin.DecorationColor == castedValue)
+                    return origin;
+
+                return origin with { DecorationColor = castedValue };
+            }
+
+            if (property == TextStyleProperty.DecorationThickness)
+            {
+                if (!overrideValue && origin.DecorationThickness != null)
+                    return origin;
+
+                var castedValue = (float?)value;
+
+                if (origin.DecorationThickness == castedValue)
+                    return origin;
+
+                return origin with { DecorationThickness = castedValue };
+            }
+
+            if (property == TextStyleProperty.DecorationStyle)
+            {
+                if (!overrideValue && origin.DecorationStyle != null)
+                    return origin;
+
+                var castedValue = (TextDecorationStyle?)value;
+
+                if (origin.DecorationStyle == castedValue)
+                    return origin;
+
+                return origin with { DecorationStyle = castedValue };
+            }
+
+            if (property == TextStyleProperty.UnderlinePosition)
+            {
+                if (!overrideValue && origin.UnderlinePosition != null)
+                    return origin;
+
+                var castedValue = (UnderlinePosition?)value;
+
+                if (origin.UnderlinePosition == castedValue)
+                    return origin;
+
+                return origin with { UnderlinePosition = castedValue };
+            }
+
             if (property == TextStyleProperty.WrapAnywhere)
             {
                 if (!overrideValue && origin.WrapAnywhere != null)
@@ -269,6 +325,10 @@ namespace ShinyPDF.Infrastructure
             result = MutateStyle(result, TextStyleProperty.IsItalic, parent.IsItalic, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.HasStrikethrough, parent.HasStrikethrough, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.HasUnderline, parent.HasUnderline, overrideStyle);
+            result = MutateStyle(result, TextStyleProperty.DecorationColor, parent.DecorationColor, overrideStyle);
+            result = MutateStyle(result, TextStyleProperty.DecorationThickness, parent.DecorationThickness, overrideStyle);
+            result = MutateStyle(result, TextStyleProperty.DecorationStyle, parent.DecorationStyle, overrideStyle);
+            result = MutateStyle(result, TextStyleProperty.UnderlinePosition, parent.UnderlinePosition, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.WrapAnywhere, parent.WrapAnywhere, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.Direction, parent.Direction, overrideStyle);
             

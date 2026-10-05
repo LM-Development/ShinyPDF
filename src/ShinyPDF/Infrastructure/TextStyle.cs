@@ -16,6 +16,10 @@ namespace ShinyPDF.Infrastructure
         internal bool? IsItalic { get; set; }
         internal bool? HasStrikethrough { get; set; }
         internal bool? HasUnderline { get; set; }
+        internal string? DecorationColor { get; set; }
+        internal float? DecorationThickness { get; set; }
+        internal TextDecorationStyle? DecorationStyle { get; set; }
+        internal UnderlinePosition? UnderlinePosition { get; set; }
         internal bool? WrapAnywhere { get; set; }
         internal TextDirection? Direction { get; set; }
 
@@ -34,6 +38,8 @@ namespace ShinyPDF.Infrastructure
             IsItalic = false,
             HasStrikethrough = false,
             HasUnderline = false,
+            DecorationStyle = TextDecorationStyle.Solid,
+            UnderlinePosition = Infrastructure.UnderlinePosition.Auto,
             WrapAnywhere = false,
             Direction = TextDirection.Auto,
             Fallback =  new TextStyle
