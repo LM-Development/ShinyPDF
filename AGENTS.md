@@ -39,4 +39,4 @@ On Linux (or with `SHINYPDF_DEVCONTAINER=true`) the Linux native assets are adde
 
 ## Current focus
 
-Open issues: more underline options (#11), template designer app (#12). Markdown follow-ups not yet built: tables, images, task lists.
+Open issues: template designer app (#12). Markdown follow-ups not yet built: tables, images, task lists.

@@ -198,6 +198,9 @@ container.Column(column =>
 | Italic | `Italic(bool value = true)` | same |
 | Underline | `Underline(bool value = true)` | same |
 | Strikethrough | `Strikethrough(bool value = true)` | same |
+| Decoration line | `DecorationColor(string)`, `DecorationThickness(float)`, `DecorationSolid()`, `DecorationDouble()`, `DecorationDotted()`, `DecorationDashed()`, `DecorationWavy()` | same |
+| Underline position | `UnderlinePositionAuto()`, `UnderlineAtBaseline()`, `UnderlineBelowGlyphs()` | same |
+| Strikethrough position | `StrikethroughThroughGlyphs()`, `StrikethroughAtBaseline()` | same |
 | Position | `NormalPosition()`, `Subscript()`, `Superscript()` | same |
 | Wrapping | `WrapAnywhere(bool value = true)` | same |
 | Direction | `DirectionAuto()`, `DirectionFromLeftToRight()`, `DirectionFromRightToLeft()` | same |
@@ -255,12 +258,6 @@ container.Text(text =>
 
 `Italic()`, `Underline()` and `Strikethrough()` accept an optional `bool`, so you can switch an inherited decoration off, for example `Underline(false)`.
 
-Decoration lines use the text color and the position and thickness defined by the font. There are no options for line color, thickness or style. Current behavior with sub- and superscript:
-
-- Superscript: the underline is drawn at the position of normal-sized text, so it lines up with the surrounding text.
-- Subscript: the underline follows the lowered, smaller glyphs.
-- Strikethrough follows the glyphs; its thickness is scaled to 62.5% for sub- and superscript.
-
 ```csharp
 container.Text(text =>
 {
@@ -269,6 +266,65 @@ container.Text(text =>
     text.Span("not underlined, ").Underline(false);
     text.Span("italic, ").Italic();
     text.Span("struck through").Strikethrough();
+});
+```
+
+#### Decoration line color, thickness and style
+
+By default, decoration lines use the text color, the thickness defined by the font, and a solid stroke. These settings apply to both underline and strikethrough:
+
+- `DecorationColor(string value)`: line color, independent of the text color. Same color formats and validation as `FontColor`.
+- `DecorationThickness(float value)`: line thickness in points. Values `<= 0` throw `ArgumentException`. For `DecorationDouble()` it is the thickness of each of the two lines.
+- `DecorationSolid()` (default), `DecorationDouble()`, `DecorationDotted()`, `DecorationDashed()`, `DecorationWavy()`: line style. Dots, dashes and waves scale with the thickness.
+
+```csharp
+container.Text(text =>
+{
+    text.Span("spelling mistake").Underline().DecorationWavy().DecorationColor(Colors.Red.Medium);
+    text.Span(" and ");
+    text.Span("removed").Strikethrough().DecorationDouble().DecorationThickness(0.75f);
+});
+```
+
+#### Underline position with sub- and superscript
+
+The underline position decides where underlines of sub- and superscript spans are drawn. Normal text is not affected.
+
+| Method | Superscript | Subscript |
+|---|---|---|
+| `UnderlinePositionAuto()` (default) | at the position of normal-sized text, in line with the surrounding text | follows the lowered, smaller glyphs |
+| `UnderlineAtBaseline()` | at the position of normal-sized text | at the position of normal-sized text |
+| `UnderlineBelowGlyphs()` | directly below the raised glyphs | follows the lowered, smaller glyphs |
+
+Use `UnderlineAtBaseline()` for a continuous underline across formulas like `H₂O`.
+
+```csharp
+container.Text(text =>
+{
+    text.DefaultTextStyle(x => x.Underline().UnderlineAtBaseline());
+    text.Span("H");
+    text.Span("2").Subscript();
+    text.Span("O");
+});
+```
+
+#### Strikethrough position with sub- and superscript
+
+The strikethrough position decides where strikethroughs of sub- and superscript spans are drawn. Normal text is not affected.
+
+| Method | Sub- and superscript |
+|---|---|
+| `StrikethroughThroughGlyphs()` (default) | through the shifted, smaller glyphs; unless `DecorationThickness` is set, the thickness is scaled to 62.5% |
+| `StrikethroughAtBaseline()` | at the position and thickness of normal-sized text, in line with the surrounding text |
+
+Use `StrikethroughAtBaseline()` for a single continuous line across formulas like `E=mc²`.
+
+```csharp
+container.Text(text =>
+{
+    text.DefaultTextStyle(x => x.Strikethrough().StrikethroughAtBaseline());
+    text.Span("E=mc");
+    text.Span("2").Superscript();
 });
 ```
 
@@ -396,6 +452,8 @@ Values used when nothing else sets a property (`TextStyle.LibraryDefault`, inter
 | Weight | Normal (400) |
 | Position | Normal |
 | Italic, underline, strikethrough, wrap anywhere | off |
+| Decoration line | text color, font thickness, solid |
+| Underline position | Auto |
 | Direction | Auto |
 | Fallback | `Noto Color Emoji` (embedded), black |
 

@@ -94,6 +94,104 @@ namespace ShinyPDF.Fluent
             return descriptor;
         }
 
+        #region Decoration
+
+        /// <summary>
+        /// Sets the color of underline and strikethrough lines. By default, the text color is used.
+        /// </summary>
+        public static T DecorationColor<T>(this T descriptor, string value) where T : TextSpanDescriptor
+        {
+            ColorValidator.Validate(value);
+            descriptor.MutateTextStyle(x => x.DecorationColor(value));
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Sets the thickness of underline and strikethrough lines, in points. By default, the thickness provided by the font is used.
+        /// </summary>
+        public static T DecorationThickness<T>(this T descriptor, float value) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.DecorationThickness(value));
+            return descriptor;
+        }
+
+        public static T DecorationSolid<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.DecorationSolid());
+            return descriptor;
+        }
+
+        public static T DecorationDouble<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.DecorationDouble());
+            return descriptor;
+        }
+
+        public static T DecorationDotted<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.DecorationDotted());
+            return descriptor;
+        }
+
+        public static T DecorationDashed<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.DecorationDashed());
+            return descriptor;
+        }
+
+        public static T DecorationWavy<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.DecorationWavy());
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Default. Superscript underlines stay on the baseline, subscript underlines follow the lowered glyphs.
+        /// </summary>
+        public static T UnderlinePositionAuto<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.UnderlinePositionAuto());
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Draws sub/superscript underlines where they would be for normal text, aligned with the surrounding text.
+        /// </summary>
+        public static T UnderlineAtBaseline<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.UnderlineAtBaseline());
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Draws sub/superscript underlines directly below the shifted glyphs.
+        /// </summary>
+        public static T UnderlineBelowGlyphs<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.UnderlineBelowGlyphs());
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Default. Draws sub/superscript strikethroughs through the shifted glyphs.
+        /// </summary>
+        public static T StrikethroughThroughGlyphs<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.StrikethroughThroughGlyphs());
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Draws sub/superscript strikethroughs where they would be for normal text, aligned with the surrounding text.
+        /// </summary>
+        public static T StrikethroughAtBaseline<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.StrikethroughAtBaseline());
+            return descriptor;
+        }
+
+        #endregion
+
         #region Weight
         
         public static T Thin<T>(this T descriptor) where T : TextSpanDescriptor

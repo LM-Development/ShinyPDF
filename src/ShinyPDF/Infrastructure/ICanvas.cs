@@ -8,6 +8,7 @@ namespace ShinyPDF.Infrastructure
         void Translate(Position vector);
         
         void DrawRectangle(Position vector, Size size, string color);
+        void DrawTextDecoration(Position vector, float width, float thickness, string color, TextDecorationStyle style);
         void DrawText(SKTextBlob skTextBlob, Position position, TextStyle style);
         void DrawImage(SKImage image, Position position, Size size);
 
