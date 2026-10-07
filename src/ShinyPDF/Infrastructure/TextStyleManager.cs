@@ -21,6 +21,7 @@ namespace ShinyPDF.Infrastructure
         DecorationThickness,
         DecorationStyle,
         UnderlinePosition,
+        StrikethroughPosition,
         WrapAnywhere,
         Fallback,
         Direction
@@ -239,6 +240,19 @@ namespace ShinyPDF.Infrastructure
                 return origin with { UnderlinePosition = castedValue };
             }
 
+            if (property == TextStyleProperty.StrikethroughPosition)
+            {
+                if (!overrideValue && origin.StrikethroughPosition != null)
+                    return origin;
+
+                var castedValue = (StrikethroughPosition?)value;
+
+                if (origin.StrikethroughPosition == castedValue)
+                    return origin;
+
+                return origin with { StrikethroughPosition = castedValue };
+            }
+
             if (property == TextStyleProperty.WrapAnywhere)
             {
                 if (!overrideValue && origin.WrapAnywhere != null)
@@ -329,6 +343,7 @@ namespace ShinyPDF.Infrastructure
             result = MutateStyle(result, TextStyleProperty.DecorationThickness, parent.DecorationThickness, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.DecorationStyle, parent.DecorationStyle, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.UnderlinePosition, parent.UnderlinePosition, overrideStyle);
+            result = MutateStyle(result, TextStyleProperty.StrikethroughPosition, parent.StrikethroughPosition, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.WrapAnywhere, parent.WrapAnywhere, overrideStyle);
             result = MutateStyle(result, TextStyleProperty.Direction, parent.Direction, overrideStyle);
             

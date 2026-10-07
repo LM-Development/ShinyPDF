@@ -149,6 +149,27 @@ namespace ShinyPDF.Fluent
             return style.Mutate(TextStyleProperty.UnderlinePosition, position);
         }
 
+        /// <summary>
+        /// Default. Draws sub/superscript strikethroughs through the shifted glyphs.
+        /// </summary>
+        public static TextStyle StrikethroughThroughGlyphs(this TextStyle style)
+        {
+            return style.StrikethroughPosition(Infrastructure.StrikethroughPosition.ThroughGlyphs);
+        }
+
+        /// <summary>
+        /// Draws sub/superscript strikethroughs where they would be for normal text, aligned with the surrounding text.
+        /// </summary>
+        public static TextStyle StrikethroughAtBaseline(this TextStyle style)
+        {
+            return style.StrikethroughPosition(Infrastructure.StrikethroughPosition.Baseline);
+        }
+
+        private static TextStyle StrikethroughPosition(this TextStyle style, StrikethroughPosition position)
+        {
+            return style.Mutate(TextStyleProperty.StrikethroughPosition, position);
+        }
+
         #endregion
 
         #region Weight

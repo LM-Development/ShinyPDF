@@ -172,6 +172,24 @@ namespace ShinyPDF.Fluent
             return descriptor;
         }
 
+        /// <summary>
+        /// Default. Draws sub/superscript strikethroughs through the shifted glyphs.
+        /// </summary>
+        public static T StrikethroughThroughGlyphs<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.StrikethroughThroughGlyphs());
+            return descriptor;
+        }
+
+        /// <summary>
+        /// Draws sub/superscript strikethroughs where they would be for normal text, aligned with the surrounding text.
+        /// </summary>
+        public static T StrikethroughAtBaseline<T>(this T descriptor) where T : TextSpanDescriptor
+        {
+            descriptor.MutateTextStyle(x => x.StrikethroughAtBaseline());
+            return descriptor;
+        }
+
         #endregion
 
         #region Weight

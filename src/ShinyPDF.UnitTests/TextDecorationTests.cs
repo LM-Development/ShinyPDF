@@ -95,23 +95,49 @@ namespace ShinyPDF.UnitTests
         }
 
         [Test]
+        public void StrikethroughPosition_ThroughGlyphs_FollowsShiftedGlyphs()
+        {
+            var normal = Strikeout(TextStyle.Default);
+
+            Assert.That(Strikeout(TextStyle.Default.Superscript()).Offset, Is.LessThan(normal.Offset));
+            Assert.That(Strikeout(TextStyle.Default.Subscript()).Offset, Is.GreaterThan(normal.Offset));
+            Assert.That(Strikeout(TextStyle.Default.Superscript().StrikethroughThroughGlyphs()).Offset, Is.EqualTo(Strikeout(TextStyle.Default.Superscript()).Offset));
+        }
+
+        [Test]
+        public void StrikethroughPosition_Baseline_AlignsWithNormalText()
+        {
+            var normal = Strikeout(TextStyle.Default);
+
+            foreach (var style in new[] { TextStyle.Default.Superscript(), TextStyle.Default.Subscript() })
+            {
+                var line = Strikeout(style.StrikethroughAtBaseline());
+                Assert.That(line.Offset, Is.EqualTo(normal.Offset));
+                Assert.That(line.Thickness, Is.EqualTo(normal.Thickness));
+            }
+        }
+
+        [Test]
         public void DecorationProperties_AreInheritedAndOverridden()
         {
             var parent = TextStyle.Default
                 .DecorationColor(Colors.Red.Medium)
                 .DecorationThickness(2)
                 .DecorationDashed()
-                .UnderlineAtBaseline();
+                .UnderlineAtBaseline()
+                .StrikethroughAtBaseline();
 
             var inherited = TextStyle.Default.ApplyInheritedStyle(parent);
             Assert.That(inherited.DecorationColor, Is.EqualTo(Colors.Red.Medium));
             Assert.That(inherited.DecorationThickness, Is.EqualTo(2));
             Assert.That(inherited.DecorationStyle, Is.EqualTo(TextDecorationStyle.Dashed));
             Assert.That(inherited.UnderlinePosition, Is.EqualTo(UnderlinePosition.Baseline));
+            Assert.That(inherited.StrikethroughPosition, Is.EqualTo(StrikethroughPosition.Baseline));
 
-            var overridden = TextStyle.Default.DecorationDotted().UnderlineBelowGlyphs().ApplyInheritedStyle(parent);
+            var overridden = TextStyle.Default.DecorationDotted().UnderlineBelowGlyphs().StrikethroughThroughGlyphs().ApplyInheritedStyle(parent);
             Assert.That(overridden.DecorationStyle, Is.EqualTo(TextDecorationStyle.Dotted));
             Assert.That(overridden.UnderlinePosition, Is.EqualTo(UnderlinePosition.BelowGlyphs));
+            Assert.That(overridden.StrikethroughPosition, Is.EqualTo(StrikethroughPosition.ThroughGlyphs));
         }
 
         [Test]
@@ -121,6 +147,7 @@ namespace ShinyPDF.UnitTests
 
             Assert.That(style.DecorationStyle, Is.EqualTo(TextDecorationStyle.Solid));
             Assert.That(style.UnderlinePosition, Is.EqualTo(UnderlinePosition.Auto));
+            Assert.That(style.StrikethroughPosition, Is.EqualTo(StrikethroughPosition.ThroughGlyphs));
             Assert.That(style.DecorationColor, Is.Null);
             Assert.That(style.DecorationThickness, Is.Null);
         }
@@ -150,6 +177,7 @@ namespace ShinyPDF.UnitTests
                     text.Span("wavy ").Underline().DecorationWavy().DecorationColor(Colors.Red.Medium);
                     text.Span("strike").Strikethrough().DecorationThickness(2);
                     text.Span("2").Subscript().Underline().UnderlineAtBaseline();
+                    text.Span("2").Superscript().Strikethrough().StrikethroughAtBaseline();
                 })))
                 .GeneratePdf();
 
@@ -159,6 +187,11 @@ namespace ShinyPDF.UnitTests
         private static float UnderlineOffset(TextStyle style)
         {
             return Draw(style.Underline()).Single().Offset;
+        }
+
+        private static DecorationLine Strikeout(TextStyle style)
+        {
+            return Draw(style.Strikethrough()).Single();
         }
 
         private static List<DecorationLine> Draw(TextStyle style)

@@ -200,6 +200,7 @@ container.Column(column =>
 | Strikethrough | `Strikethrough(bool value = true)` | same |
 | Decoration line | `DecorationColor(string)`, `DecorationThickness(float)`, `DecorationSolid()`, `DecorationDouble()`, `DecorationDotted()`, `DecorationDashed()`, `DecorationWavy()` | same |
 | Underline position | `UnderlinePositionAuto()`, `UnderlineAtBaseline()`, `UnderlineBelowGlyphs()` | same |
+| Strikethrough position | `StrikethroughThroughGlyphs()`, `StrikethroughAtBaseline()` | same |
 | Position | `NormalPosition()`, `Subscript()`, `Superscript()` | same |
 | Wrapping | `WrapAnywhere(bool value = true)` | same |
 | Direction | `DirectionAuto()`, `DirectionFromLeftToRight()`, `DirectionFromRightToLeft()` | same |
@@ -295,7 +296,7 @@ The underline position decides where underlines of sub- and superscript spans ar
 | `UnderlineAtBaseline()` | at the position of normal-sized text | at the position of normal-sized text |
 | `UnderlineBelowGlyphs()` | directly below the raised glyphs | follows the lowered, smaller glyphs |
 
-Use `UnderlineAtBaseline()` for a continuous underline across formulas like `H₂O`. Strikethrough always follows the glyphs; unless `DecorationThickness` is set, its thickness is scaled to 62.5% for sub- and superscript.
+Use `UnderlineAtBaseline()` for a continuous underline across formulas like `H₂O`.
 
 ```csharp
 container.Text(text =>
@@ -304,6 +305,26 @@ container.Text(text =>
     text.Span("H");
     text.Span("2").Subscript();
     text.Span("O");
+});
+```
+
+#### Strikethrough position with sub- and superscript
+
+The strikethrough position decides where strikethroughs of sub- and superscript spans are drawn. Normal text is not affected.
+
+| Method | Sub- and superscript |
+|---|---|
+| `StrikethroughThroughGlyphs()` (default) | through the shifted, smaller glyphs; unless `DecorationThickness` is set, the thickness is scaled to 62.5% |
+| `StrikethroughAtBaseline()` | at the position and thickness of normal-sized text, in line with the surrounding text |
+
+Use `StrikethroughAtBaseline()` for a single continuous line across formulas like `E=mc²`.
+
+```csharp
+container.Text(text =>
+{
+    text.DefaultTextStyle(x => x.Strikethrough().StrikethroughAtBaseline());
+    text.Span("E=mc");
+    text.Span("2").Superscript();
 });
 ```
 

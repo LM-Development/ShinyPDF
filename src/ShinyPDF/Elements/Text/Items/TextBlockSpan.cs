@@ -165,10 +165,10 @@ namespace ShinyPDF.Elements.Text.Items
             // draw stroke
             if ((Style.HasStrikethrough ?? false) && fontMetrics.StrikeoutPosition.HasValue)
             {
-                var strikeoutThickness = fontMetrics.StrikeoutThickness ?? 1;
-                strikeoutThickness *= Style.FontPosition == FontPosition.Normal ? 1f : 0.625f;
+                var strikeout = GetStrikeoutPlacement(fontMetrics.StrikeoutPosition.Value, fontMetrics.StrikeoutThickness);
 
-                DrawLine(fontMetrics.StrikeoutPosition.Value + glyphOffsetY, strikeoutThickness);
+                if (strikeout.HasValue)
+                    DrawLine(strikeout.Value.offset, strikeout.Value.thickness);
             }
 
             void DrawLine(float offset, float thickness)
@@ -205,6 +205,27 @@ namespace ShinyPDF.Elements.Text.Items
                     return null;
 
                 return (normalMetrics.UnderlinePosition.Value, normalMetrics.UnderlineThickness ?? 1);
+            }
+
+            (float offset, float thickness)? GetStrikeoutPlacement(float glyphStrikeoutPosition, float? glyphStrikeoutThickness)
+            {
+                var alignWithBaseline = Style.FontPosition != FontPosition.Normal
+                    && Style.StrikethroughPosition == StrikethroughPosition.Baseline;
+
+                if (!alignWithBaseline)
+                {
+                    var thickness = (glyphStrikeoutThickness ?? 1) * (Style.FontPosition == FontPosition.Normal ? 1f : 0.625f);
+                    return (glyphStrikeoutPosition + glyphOffsetY, thickness);
+                }
+
+                var normalMetrics = Style
+                    .Mutate(TextStyleProperty.FontPosition, FontPosition.Normal)
+                    .ToFontMetrics();
+
+                if (!normalMetrics.StrikeoutPosition.HasValue)
+                    return null;
+
+                return (normalMetrics.StrikeoutPosition.Value, normalMetrics.StrikeoutThickness ?? 1);
             }
 
             float GetGlyphOffset()

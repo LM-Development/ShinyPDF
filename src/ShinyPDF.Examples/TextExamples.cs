@@ -396,6 +396,46 @@ namespace ShinyPDF.Examples
         }
 
         [Test]
+        public void SuperscriptSubscript_StrikethroughPosition()
+        {
+            RenderingTest
+               .Create()
+               .PageSize(800, 200)
+               .ProduceImages()
+               .ShowResults()
+               .Render(container =>
+               {
+                   container
+                        .Padding(25)
+                        .DefaultTextStyle(x => x.FontSize(30).Strikethrough())
+                        .Column(column =>
+                        {
+                            column.Spacing(25);
+
+                            column.Item().Text(text =>
+                            {
+                                text.Span("Through glyphs: (E = mc");
+                                text.Span("2").Superscript();
+                                text.Span("), H");
+                                text.Span("2").Subscript();
+                                text.Span("O");
+                            });
+
+                            column.Item().Text(text =>
+                            {
+                                text.DefaultTextStyle(x => x.StrikethroughAtBaseline());
+
+                                text.Span("Baseline: (E = mc");
+                                text.Span("2").Superscript();
+                                text.Span("), H");
+                                text.Span("2").Subscript();
+                                text.Span("O");
+                            });
+                        });
+               });
+        }
+
+        [Test]
         public void DecorationStyles()
         {
             RenderingTest

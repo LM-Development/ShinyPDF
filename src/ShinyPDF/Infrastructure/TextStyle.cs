@@ -20,6 +20,7 @@ namespace ShinyPDF.Infrastructure
         internal float? DecorationThickness { get; set; }
         internal TextDecorationStyle? DecorationStyle { get; set; }
         internal UnderlinePosition? UnderlinePosition { get; set; }
+        internal StrikethroughPosition? StrikethroughPosition { get; set; }
         internal bool? WrapAnywhere { get; set; }
         internal TextDirection? Direction { get; set; }
 
@@ -40,6 +41,7 @@ namespace ShinyPDF.Infrastructure
             HasUnderline = false,
             DecorationStyle = TextDecorationStyle.Solid,
             UnderlinePosition = Infrastructure.UnderlinePosition.Auto,
+            StrikethroughPosition = Infrastructure.StrikethroughPosition.ThroughGlyphs,
             WrapAnywhere = false,
             Direction = TextDirection.Auto,
             Fallback =  new TextStyle
