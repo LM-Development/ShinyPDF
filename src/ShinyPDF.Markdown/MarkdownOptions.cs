@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using ShinyPDF.Helpers;
 using ShinyPDF.Infrastructure;
 
@@ -30,10 +32,62 @@ namespace ShinyPDF.Markdown
 
         public string HorizontalRuleColor { get; set; } = Colors.Grey.Lighten1;
 
+        public string TableBorderColor { get; set; } = Colors.Grey.Lighten1;
+
+        public string TableHeaderBackgroundColor { get; set; } = Colors.Grey.Lighten4;
+
+        /// <summary>Space between a table cell border and its content.</summary>
+        public float TableCellPadding { get; set; } = 4;
+
+        /// <summary>Border and fill color of task list checkboxes.</summary>
+        public string CheckboxColor { get; set; } = Colors.Grey.Darken2;
+
         /// <summary>
         /// Overrides the style of a heading. Receives the heading level (1-6).
         /// When not set, headings are bold and scaled from <see cref="BaseFontSize"/>.
         /// </summary>
         public Func<int, TextStyle>? HeadingStyle { get; set; }
+
+        /// <summary>
+        /// Loads the bytes of an image from its Markdown URL (e.g. from disk, embedded resources or HTTP).
+        /// Return <c>null</c> to show the alternative text instead. <c>data:</c> URIs are decoded without a resolver.
+        /// When not set, only <c>data:</c> URIs are rendered, so Markdown never reads files or the network on its own.
+        /// </summary>
+        public Func<string, byte[]?>? ImageResolver { get; set; }
+
+        /// <summary>
+        /// Languages used to highlight fenced code blocks, matched by the name after the opening fence.
+        /// Starts with <see cref="SyntaxLanguages.All"/>; add your own or clear the list to disable highlighting.
+        /// When several languages share a name, the one added last wins.
+        /// </summary>
+        public List<SyntaxLanguage> CodeLanguages { get; } = SyntaxLanguages.All().ToList();
+
+        /// <summary>Colors of highlighted code. Kinds without a color use the regular text color.</summary>
+        public Dictionary<SyntaxTokenKind, string> SyntaxColors { get; } = new()
+        {
+            [SyntaxTokenKind.Keyword] = "#CF222E",
+            [SyntaxTokenKind.Type] = "#8250DF",
+            [SyntaxTokenKind.String] = "#0A3069",
+            [SyntaxTokenKind.Number] = "#0550AE",
+            [SyntaxTokenKind.Comment] = "#6E7781",
+            [SyntaxTokenKind.Tag] = "#116329",
+            [SyntaxTokenKind.Attribute] = "#0550AE"
+        };
+
+        /// <summary>
+        /// Custom renderers for fenced code blocks by language name, e.g. "mermaid" or "math".
+        /// The renderer receives the container and the code; it replaces the code box entirely.
+        /// </summary>
+        public Dictionary<string, Action<IContainer, string>> CodeBlockRenderers { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>Title and color of alert blocks (<c>&gt; [!NOTE]</c>, ...) by alert kind.</summary>
+        public Dictionary<string, MarkdownAlertStyle> AlertStyles { get; } = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["NOTE"] = new("Note", "#0969DA"),
+            ["TIP"] = new("Tip", "#1A7F37"),
+            ["IMPORTANT"] = new("Important", "#8250DF"),
+            ["WARNING"] = new("Warning", "#9A6700"),
+            ["CAUTION"] = new("Caution", "#CF222E")
+        };
     }
 }

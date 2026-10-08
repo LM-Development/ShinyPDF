@@ -9,6 +9,7 @@ using ShinyPDF.Fluent;
 using ShinyPDF.Helpers;
 using ShinyPDF.Infrastructure;
 using ShinyPDF.Markdown;
+using SkiaSharp;
 
 namespace ShinyPDF.UnitTests
 {
@@ -158,6 +159,217 @@ namespace ShinyPDF.UnitTests
         }
 
         [Test]
+        public void Image_WithoutResolver_DoesNotLoadFiles()
+        {
+            var root = Render("![a logo](logo.png)");
+
+            Assert.That(Descendants(root).OfType<Image>(), Is.Empty);
+        }
+
+        [Test]
+        public void Image_FromDataUri_IsRendered()
+        {
+            var root = Render($"![dot](data:image/png;base64,{Convert.ToBase64String(CreatePng(4, 2))})");
+
+            Assert.That(Descendants(root).OfType<Image>().Single().InternalImage.Width, Is.EqualTo(4));
+            Assert.That(Descendants(root).OfType<Constrained>().Any(x => x.MaxWidth == 4), Is.True);
+            Assert.That(Spans(root), Is.Empty);
+        }
+
+        [Test]
+        public void Image_IsLoadedThroughResolver()
+        {
+            var requested = new List<string>();
+            var root = Render("text ![chart](images/chart.png) text", x => x.ImageResolver = url =>
+            {
+                requested.Add(url);
+                return CreatePng(10, 10);
+            });
+
+            Assert.That(requested, Is.EqualTo(new[] { "images/chart.png" }));
+            Assert.That(Descendants(root).OfType<Image>().Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Image_ThatCannotBeDecoded_FallsBackToAltText()
+        {
+            var root = Render("![broken](broken.png)", x => x.ImageResolver = _ => new byte[] { 1, 2, 3 });
+
+            Assert.That(Spans(root).Single().Text, Is.EqualTo("broken"));
+            Assert.That(Descendants(root).OfType<Image>(), Is.Empty);
+        }
+
+        [Test]
+        public void Table_RendersHeaderAndBodyCells()
+        {
+            var options = new MarkdownOptions();
+            var root = Render("| Name | Qty |\n|---|---|\n| Apple | 3 |\n| Pear |");
+
+            Assert.That(Spans(root).Select(x => x.Text), Is.EquivalentTo(new[] { "Name", "Qty", "Apple", "3", "Pear" }));
+
+            var header = Descendants(root).OfType<Background>().Where(x => x.Color == options.TableHeaderBackgroundColor).ToList();
+            Assert.That(header, Has.Count.EqualTo(2));
+            Assert.That(header.Select(x => Descendants(x).OfType<DefaultTextStyle>().First().TextStyle.FontWeight), Is.All.EqualTo(FontWeight.Bold));
+
+            var cellBorders = Descendants(root).OfType<Border>().Where(x => x.Color == options.TableBorderColor);
+            Assert.That(cellBorders.Count(), Is.EqualTo(6));
+        }
+
+        [Test]
+        public void Table_AppliesColumnAlignment()
+        {
+            var root = Render("| L | C | R |\n|:--|:-:|--:|\n| a | b | c |");
+
+            var alignments = Descendants(root).OfType<Alignment>().Select(x => x.Horizontal).ToList();
+            Assert.That(alignments.Count(x => x == HorizontalAlignment.Center), Is.EqualTo(2));
+            Assert.That(alignments.Count(x => x == HorizontalAlignment.Right), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TaskList_ReplacesBulletsWithCheckboxes()
+        {
+            var options = new MarkdownOptions();
+            var root = Render("- [x] done\n- [ ] open\n- regular");
+
+            Assert.That(Spans(root).Select(x => x.Text), Is.EqualTo(new[] { "done", "open", "•", "regular" }));
+
+            var checkboxes = Descendants(root).OfType<Border>().Where(x => x.Color == options.CheckboxColor).ToList();
+            Assert.That(checkboxes, Has.Count.EqualTo(2));
+            Assert.That(Descendants(checkboxes[0]).OfType<Background>().Single().Color, Is.EqualTo(options.CheckboxColor));
+            Assert.That(Descendants(checkboxes[1]).OfType<Background>(), Is.Empty);
+        }
+
+        [Test]
+        public void HtmlEntities_AreDecoded()
+        {
+            var root = Render("&copy; &amp; &#8364; &lt;tag&gt;");
+
+            Assert.That(string.Concat(Spans(root).Select(x => x.Text)), Is.EqualTo("© & € <tag>"));
+        }
+
+        [Test]
+        public void Alert_HasTitleAndAccentColor()
+        {
+            var style = new MarkdownOptions().AlertStyles["WARNING"];
+            var root = Render("> [!WARNING]\n> Mind the gap.");
+
+            var title = Span(root, style.Title);
+            Assert.That(title.Style.Color, Is.EqualTo(style.Color));
+            Assert.That(title.Style.FontWeight, Is.EqualTo(FontWeight.Bold));
+            Assert.That(Descendants(root).OfType<Border>().Single().Color, Is.EqualTo(style.Color));
+            Assert.That(Span(root, "Mind the gap."), Is.Not.Null);
+            Assert.That(Spans(root), Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public void AlertStyle_CanBeOverridden()
+        {
+            var root = Render("> [!NOTE]\n> text", x => x.AlertStyles["note"] = new MarkdownAlertStyle("Hinweis", Colors.Green.Darken2));
+
+            Assert.That(Span(root, "Hinweis").Style.Color, Is.EqualTo(Colors.Green.Darken2));
+        }
+
+        [Test]
+        public void CodeBlock_WithKnownLanguage_IsHighlighted()
+        {
+            var options = new MarkdownOptions();
+            var root = Render("```csharp\nvar name = \"x\"; // note\nreturn 42;\n```");
+
+            var colors = Spans(root)
+                .Where(x => x.Text.Trim().Length > 0)
+                .GroupBy(x => x.Text.Trim())
+                .ToDictionary(x => x.Key, x => x.First().Style.Color);
+            Assert.That(colors["var"], Is.EqualTo(options.SyntaxColors[SyntaxTokenKind.Keyword]));
+            Assert.That(colors["\"x\""], Is.EqualTo(options.SyntaxColors[SyntaxTokenKind.String]));
+            Assert.That(colors["// note"], Is.EqualTo(options.SyntaxColors[SyntaxTokenKind.Comment]));
+            Assert.That(colors["42"], Is.EqualTo(options.SyntaxColors[SyntaxTokenKind.Number]));
+            Assert.That(colors["name ="], Is.Null);
+        }
+
+        [Test]
+        public void CodeBlock_WithUnknownLanguage_IsPlain()
+        {
+            var root = Render("```brainfuck\nvar x = 1;\n```");
+
+            Assert.That(Spans(root).Single().Text, Is.EqualTo("var x = 1;"));
+        }
+
+        [Test]
+        public void CodeBlock_CustomLanguage_CanBeAdded()
+        {
+            var root = Render("```Kotlin\nfun main() {}\n```", x => x.CodeLanguages.Add(new SyntaxLanguage("kotlin").Keywords("fun")));
+
+            Assert.That(Span(root, "fun").Style.Color, Is.EqualTo(new MarkdownOptions().SyntaxColors[SyntaxTokenKind.Keyword]));
+        }
+
+        [Test]
+        public void CodeBlock_ClearedLanguages_DisableHighlighting()
+        {
+            var root = Render("```csharp\nvar x = 1;\n```", x => x.CodeLanguages.Clear());
+
+            Assert.That(Spans(root).Single().Text, Is.EqualTo("var x = 1;"));
+        }
+
+        [Test]
+        public void CodeBlock_CustomRenderer_ReplacesCodeBox()
+        {
+            string received = null;
+            var root = Render("```mermaid\ngraph TD\n  A --> B\n```", x => x.CodeBlockRenderers["mermaid"] = (container, code) =>
+            {
+                received = code;
+                container.Text("diagram");
+            });
+
+            Assert.That(received, Is.EqualTo("graph TD\n  A --> B"));
+            Assert.That(Spans(root).Single().Text, Is.EqualTo("diagram"));
+            Assert.That(Descendants(root).OfType<Background>(), Is.Empty);
+        }
+
+        [Test]
+        public void SyntaxLanguage_TokensCoverTheWholeCode()
+        {
+            const string code = "a /* b */ \"c\" 1 // d\nx";
+            var tokens = SyntaxLanguages.JavaScript().Tokenize(code).ToList();
+
+            Assert.That(string.Concat(tokens.Select(x => x.Text)), Is.EqualTo(code));
+            Assert.That(tokens.Where(x => x.Kind == SyntaxTokenKind.Comment).Select(x => x.Text), Is.EqualTo(new[] { "/* b */", "// d" }));
+        }
+
+        [Test]
+        public void SyntaxLanguage_StringsWinOverCommentMarkersInside()
+        {
+            var tokens = SyntaxLanguages.Python().Tokenize("x = \"# not a comment\"").ToList();
+
+            Assert.That(tokens.Single(x => x.Kind != null), Is.EqualTo(((SyntaxTokenKind?)SyntaxTokenKind.String, "\"# not a comment\"")));
+        }
+
+        [TestCase("csharp", "public class A { int x = 0x1F; string s = @\"a\"\"b\"; }")]
+        [TestCase("js", "const a = `t ${b}`; // c")]
+        [TestCase("ts", "type A = { b: number };")]
+        [TestCase("json", "{ \"a\": [1, true, null] }")]
+        [TestCase("html", "<!-- c --><a href=\"x\">t</a>")]
+        [TestCase("css", "a:hover { color: #fff; margin: 1px; }")]
+        [TestCase("sql", "SELECT * FROM t WHERE a = 'x' -- c")]
+        [TestCase("py", "def f(): return '''x'''")]
+        [TestCase("bash", "echo \"$HOME\" # c")]
+        [TestCase("powershell", "Get-Item $env:PATH # c")]
+        [TestCase("yaml", "key: value\n- item: 1 # c")]
+        public void BuiltInLanguages_HighlightSomethingAndKeepAllText(string name, string code)
+        {
+            var language = SyntaxLanguages.All().Single(x => x.HasName(name));
+            var tokens = language.Tokenize(code).ToList();
+
+            Assert.That(string.Concat(tokens.Select(x => x.Text)), Is.EqualTo(code));
+            Assert.That(tokens.Count(x => x.Kind != null), Is.GreaterThanOrEqualTo(2));
+        }
+
+        [Test]
+        public void SyntaxLanguage_RejectsInvalidPattern()
+        {
+            Assert.Catch<ArgumentException>(() => new SyntaxLanguage("x").Rule(SyntaxTokenKind.Keyword, "("));
+        }
+
+        [Test]
         public void HardLineBreak_SplitsParagraphIntoLines()
         {
             var root = Render("first  \nsecond");
@@ -181,7 +393,7 @@ namespace ShinyPDF.UnitTests
         [Test]
         public void Document_WithAllFeatures_GeneratesPdf()
         {
-            const string markdown = """
+            var markdown = $$"""
                 # Release notes
 
                 Version **2.1** adds *Markdown* support. See [the docs](https://github.com/LM-Development/ShinyPDF).
@@ -202,6 +414,18 @@ namespace ShinyPDF.UnitTests
                 ```csharp
                 container.Markdown(text);
                 ```
+
+                | Feature | Status |
+                |---|:-:|
+                | Tables | done |
+
+                - [x] task lists
+                - [ ] more
+
+                > [!TIP]
+                > Alerts work too.
+
+                ![pixel](data:image/png;base64,{{Convert.ToBase64String(CreatePng(2, 2))}})
                 """;
 
             var pdf = Document
@@ -218,11 +442,21 @@ namespace ShinyPDF.UnitTests
             return container;
         }
 
+        private static byte[] CreatePng(int width, int height)
+        {
+            using var bitmap = new SKBitmap(width, height);
+            bitmap.Erase(SKColors.Red);
+            using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
+            return data.ToArray();
+        }
+
         private static IEnumerable<Element> Descendants(Element element)
         {
             yield return element;
 
-            foreach (var child in element.GetChildren().OfType<Element>())
+            var inlineElements = (element as TextBlock)?.Items.OfType<TextBlockElement>().Select(x => x.Element) ?? Enumerable.Empty<Element>();
+
+            foreach (var child in element.GetChildren().OfType<Element>().Concat(inlineElements))
             foreach (var descendant in Descendants(child))
                 yield return descendant;
         }
