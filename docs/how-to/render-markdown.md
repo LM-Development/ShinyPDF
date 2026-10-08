@@ -108,7 +108,7 @@ options.ImageResolver = url =>
 };
 ```
 
-Images are shown at their natural size (one pixel per point) and scaled down to the available width. PNG, JPEG, WebP, GIF and BMP are supported; SVG is not. Images that cannot be decoded fall back to their alternative text.
+Images are shown at their natural size (one pixel per point) and scaled down to the available width and to `options.MaxImageHeight` (500 points by default; keep it below the page content height). An image inside a link (`[![logo](logo.png)](https://...)`) is clickable. PNG, JPEG, WebP, GIF and BMP are supported; SVG is not. Images that cannot be decoded fall back to their alternative text.
 
 ## Syntax highlighting
 

@@ -44,7 +44,7 @@ namespace ShinyPDF.Markdown
                 .Element(x => ComposeBlocks(x, document, Options.BlockSpacing));
         }
 
-        private void ComposeBlocks(IContainer container, ContainerBlock blocks, float spacing)
+        private void ComposeBlocks(IContainer container, ContainerBlock blocks, float spacing, HorizontalAlignment? textAlignment = null)
         {
             var visibleBlocks = blocks.Where(IsRendered).ToList();
 
@@ -53,7 +53,7 @@ namespace ShinyPDF.Markdown
                 column.Spacing(spacing);
 
                 foreach (var block in visibleBlocks)
-                    ComposeBlock(column.Item(), block);
+                    ComposeBlock(column.Item(), block, textAlignment);
             });
         }
 
@@ -67,16 +67,16 @@ namespace ShinyPDF.Markdown
             };
         }
 
-        private void ComposeBlock(IContainer container, Block block)
+        private void ComposeBlock(IContainer container, Block block, HorizontalAlignment? textAlignment)
         {
             switch (block)
             {
                 case HeadingBlock heading:
-                    container.Text(text => ComposeInlines(text, heading.Inline, GetHeadingStyle(heading.Level), null));
+                    ComposeText(container, heading.Inline, GetHeadingStyle(heading.Level), textAlignment);
                     break;
 
                 case ParagraphBlock paragraph:
-                    container.Text(text => ComposeInlines(text, paragraph.Inline, TextStyle.Default, null));
+                    ComposeText(container, paragraph.Inline, TextStyle.Default, textAlignment);
                     break;
 
                 case ListBlock list:
@@ -113,9 +113,23 @@ namespace ShinyPDF.Markdown
                     break;
 
                 case LeafBlock leaf:
-                    container.Text(text => ComposeInlines(text, leaf.Inline, TextStyle.Default, null));
+                    ComposeText(container, leaf.Inline, TextStyle.Default, textAlignment);
                     break;
             }
+        }
+
+        private void ComposeText(IContainer container, ContainerInline? inlines, TextStyle style, HorizontalAlignment? alignment)
+        {
+            container.Text(text =>
+            {
+                // aligned per line, so wrapped text in centered or right-aligned table columns lines up
+                if (alignment == HorizontalAlignment.Center)
+                    text.AlignCenter();
+                else if (alignment == HorizontalAlignment.Right)
+                    text.AlignRight();
+
+                ComposeInlines(text, inlines, style, null);
+            });
         }
 
         private void ComposeList(IContainer container, ListBlock list)
@@ -309,14 +323,14 @@ namespace ShinyPDF.Markdown
                         ? table.ColumnDefinitions[columnIndex].Alignment
                         : null;
 
-                    cellContainer = alignment switch
+                    var textAlignment = alignment switch
                     {
-                        TableColumnAlign.Center => cellContainer.AlignCenter(),
-                        TableColumnAlign.Right => cellContainer.AlignRight(),
-                        _ => cellContainer
+                        TableColumnAlign.Center => HorizontalAlignment.Center,
+                        TableColumnAlign.Right => HorizontalAlignment.Right,
+                        _ => (HorizontalAlignment?)null
                     };
 
-                    ComposeBlocks(cellContainer, cell, Options.ListItemSpacing);
+                    ComposeBlocks(cellContainer, cell, Options.ListItemSpacing, textAlignment);
                     columnIndex += columnSpan;
                 }
             }
@@ -398,17 +412,26 @@ namespace ShinyPDF.Markdown
         private void ComposeImage(TextDescriptor text, LinkInline image, TextStyle style, string? url)
         {
             var data = LoadImage(image.Url);
-            var width = data == null ? 0 : GetImageWidth(data);
+            var size = data == null ? null : DecodeImageSize(data);
 
-            if (data == null || width == 0)
+            if (data == null || size == null)
             {
                 // unavailable or undecodable image, show its alternative text instead
                 ComposeInlines(text, image, style, url);
                 return;
             }
 
-            // natural size (one pixel per point), scaled down when wider than the available space
-            text.Element().MaxWidth(width).Image(data, ImageScaling.FitWidth);
+            // natural size (one pixel per point), scaled down to MaxImageHeight and to the available width;
+            // inline elements are measured without a height limit, so the height has to be bounded here
+            var (width, height) = size.Value;
+            var maxWidth = Math.Min(width, Options.MaxImageHeight * width / height);
+
+            var container = text.Element();
+
+            if (!string.IsNullOrWhiteSpace(url))
+                container = container.Hyperlink(url);
+
+            container.MaxWidth(maxWidth).Image(data, ImageScaling.FitWidth);
         }
 
         private byte[]? LoadImage(string? source)
@@ -439,11 +462,22 @@ namespace ShinyPDF.Markdown
             }
         }
 
-        private static int GetImageWidth(byte[] data)
+        private static (float Width, float Height)? DecodeImageSize(byte[] data)
         {
             using var stream = new SKMemoryStream(data);
             using var codec = SKCodec.Create(stream);
-            return codec?.Info.Width ?? 0;
+
+            if (codec == null || codec.Info.Width == 0 || codec.Info.Height == 0)
+                return null;
+
+            // decode all pixels: a valid header alone does not guarantee the image is complete
+            var info = new SKImageInfo(codec.Info.Width, codec.Info.Height);
+            using var bitmap = new SKBitmap(info);
+
+            if (codec.GetPixels(info, bitmap.GetPixels()) != SKCodecResult.Success)
+                return null;
+
+            return (info.Width, info.Height);
         }
 
         private void ComposeLink(TextDescriptor text, LinkInline link, string? url, TextStyle style)

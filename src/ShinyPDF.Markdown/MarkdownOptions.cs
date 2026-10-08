@@ -39,6 +39,12 @@ namespace ShinyPDF.Markdown
         /// <summary>Space between a table cell border and its content.</summary>
         public float TableCellPadding { get; set; } = 4;
 
+        /// <summary>
+        /// Largest height of an image; taller images are scaled down proportionally.
+        /// Keep it below the page content height, otherwise the image cannot be placed on any page.
+        /// </summary>
+        public float MaxImageHeight { get; set; } = 500;
+
         /// <summary>Border and fill color of task list checkboxes.</summary>
         public string CheckboxColor { get; set; } = Colors.Grey.Darken2;
 

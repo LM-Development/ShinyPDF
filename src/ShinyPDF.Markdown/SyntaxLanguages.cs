@@ -163,8 +163,7 @@ namespace ShinyPDF.Markdown
                 .Rule(SyntaxTokenKind.Comment, HashComment)
                 .Rule(SyntaxTokenKind.String, DoubleQuoted)
                 .Rule(SyntaxTokenKind.String, @"'[^']*'")
-                .Rule(SyntaxTokenKind.Attribute, @"\$\{[^}]*\}|\$[\w@#?*!$-]")
-                .Rule(SyntaxTokenKind.Attribute, @"\$\w+")
+                .Rule(SyntaxTokenKind.Attribute, @"\$\{[^}]*\}|\$\w+|\$[@#?*!$-]")
                 .Keywords(
                     "case", "do", "done", "elif", "else", "esac", "export", "fi", "for", "function", "if", "in",
                     "local", "return", "then", "until", "while");

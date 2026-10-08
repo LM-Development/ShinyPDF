@@ -200,6 +200,54 @@ namespace ShinyPDF.UnitTests
         }
 
         [Test]
+        public void Image_WithValidHeaderButCorruptPixels_FallsBackToAltText()
+        {
+            var png = CreatePng(64, 64, noisy: true);
+            var truncated = png.Take(png.Length / 2).ToArray();
+
+            using (var codec = SKCodec.Create(new SKMemoryStream(truncated)))
+                Assert.That(codec, Is.Not.Null, "the header must stay readable for this test");
+
+            var root = Render("![truncated](a.png)", x => x.ImageResolver = _ => truncated);
+
+            Assert.That(Spans(root).Single().Text, Is.EqualTo("truncated"));
+            Assert.That(Descendants(root).OfType<Image>(), Is.Empty);
+        }
+
+        [Test]
+        public void Image_InsideLink_IsClickable()
+        {
+            var root = Render("[![logo](logo.png)](https://example.com)", x => x.ImageResolver = _ => CreatePng(4, 4));
+
+            var hyperlink = Descendants(root).OfType<Hyperlink>().Single();
+            Assert.That(hyperlink.Url, Is.EqualTo("https://example.com"));
+            Assert.That(Descendants(hyperlink).OfType<Image>().Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Image_TallerThanMaxImageHeight_IsScaledDown()
+        {
+            var root = Render("![tall](tall.png)", x => x.ImageResolver = _ => CreatePng(200, 1200));
+
+            var expectedWidth = 200 * new MarkdownOptions().MaxImageHeight / 1200;
+            Assert.That(Descendants(root).OfType<Constrained>().Single(x => x.MaxWidth != null).MaxWidth, Is.EqualTo(expectedWidth).Within(0.01));
+        }
+
+        [Test]
+        public void Image_TallerThanPage_StillGeneratesPdf()
+        {
+            var pdf = Document
+                .Create(document => document.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Content().Markdown("![tall](tall.png)", x => x.ImageResolver = _ => CreatePng(200, 1200));
+                }))
+                .GeneratePdf();
+
+            Assert.That(pdf, Is.Not.Empty);
+        }
+
+        [Test]
         public void Table_RendersHeaderAndBodyCells()
         {
             var options = new MarkdownOptions();
@@ -216,13 +264,30 @@ namespace ShinyPDF.UnitTests
         }
 
         [Test]
-        public void Table_AppliesColumnAlignment()
+        public void Table_AlignsEachTextLineOfAlignedColumns()
         {
             var root = Render("| L | C | R |\n|:--|:-:|--:|\n| a | b | c |");
 
-            var alignments = Descendants(root).OfType<Alignment>().Select(x => x.Horizontal).ToList();
-            Assert.That(alignments.Count(x => x == HorizontalAlignment.Center), Is.EqualTo(2));
-            Assert.That(alignments.Count(x => x == HorizontalAlignment.Right), Is.EqualTo(2));
+            // alignment is set on the text block, so every wrapped line is aligned, not only the block as a whole
+            var alignments = Descendants(root).OfType<TextBlock>().ToDictionary(x => x.Text, x => x.Alignment);
+            Assert.That(alignments["L"], Is.Null);
+            Assert.That(alignments["a"], Is.Null);
+            Assert.That(alignments["C"], Is.EqualTo(HorizontalAlignment.Center));
+            Assert.That(alignments["b"], Is.EqualTo(HorizontalAlignment.Center));
+            Assert.That(alignments["R"], Is.EqualTo(HorizontalAlignment.Right));
+            Assert.That(alignments["c"], Is.EqualTo(HorizontalAlignment.Right));
+        }
+
+        [Test]
+        public void Table_WithWrappedAlignedText_GeneratesPdf()
+        {
+            var markdown = "| Centered | Right |\n|:-:|--:|\n| " + string.Join(" ", Enumerable.Repeat("long text", 30)) + " | x |";
+
+            var pdf = Document
+                .Create(document => document.Page(page => page.Content().Markdown(markdown)))
+                .GeneratePdf();
+
+            Assert.That(pdf, Is.Not.Empty);
         }
 
         [Test]
@@ -364,6 +429,17 @@ namespace ShinyPDF.UnitTests
         }
 
         [Test]
+        public void Shell_HighlightsWholeUnquotedVariableNames()
+        {
+            var variables = SyntaxLanguages.Shell()
+                .Tokenize("echo $HOME ${PATH} $1 $?")
+                .Where(x => x.Kind == SyntaxTokenKind.Attribute)
+                .Select(x => x.Text);
+
+            Assert.That(variables, Is.EqualTo(new[] { "$HOME", "${PATH}", "$1", "$?" }));
+        }
+
+        [Test]
         public void SyntaxLanguage_RejectsInvalidPattern()
         {
             Assert.Catch<ArgumentException>(() => new SyntaxLanguage("x").Rule(SyntaxTokenKind.Keyword, "("));
@@ -442,10 +518,19 @@ namespace ShinyPDF.UnitTests
             return container;
         }
 
-        private static byte[] CreatePng(int width, int height)
+        private static byte[] CreatePng(int width, int height, bool noisy = false)
         {
             using var bitmap = new SKBitmap(width, height);
             bitmap.Erase(SKColors.Red);
+
+            // noise keeps the compressed pixel data large, so truncating the file cuts into it
+            if (noisy)
+            {
+                for (var x = 0; x < width; x++)
+                for (var y = 0; y < height; y++)
+                    bitmap.SetPixel(x, y, new SKColor(unchecked((uint)(x * 7919 ^ y * 104729) * 2654435761u) | 0xFF000000));
+            }
+
             using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
             return data.ToArray();
         }
