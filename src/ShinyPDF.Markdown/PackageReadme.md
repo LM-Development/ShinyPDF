@@ -44,4 +44,6 @@ page.Content().Markdown(markdown, options =>
 
 ## Supported Markdown
 
-Headings, paragraphs, bold, italic, strikethrough, inline code, code blocks, links, bullet and numbered lists (nested), blockquotes and horizontal rules. Raw HTML is shown as plain text, and images are replaced by their alternative text. Parsing is done by [Markdig](https://github.com/xoofx/markdig).
+Headings, paragraphs, bold, italic, strikethrough, inline code, links, bullet, numbered and task lists (nested), tables, blockquotes, GitHub alerts (`> [!NOTE]`), horizontal rules and HTML entities. Code blocks are syntax highlighted for C#, JavaScript, TypeScript, JSON, XML/HTML, CSS, SQL, Python, Shell, PowerShell and YAML, and you can add your own languages.
+
+Images are rendered from `data:` URIs or loaded through `options.ImageResolver`, so Markdown never reads files or the network on its own. Diagrams and formulas (for example `mermaid` or `math` code blocks) can be drawn by your own renderer through `options.CodeBlockRenderers`. Raw HTML is shown as plain text. Parsing is done by [Markdig](https://github.com/xoofx/markdig).
