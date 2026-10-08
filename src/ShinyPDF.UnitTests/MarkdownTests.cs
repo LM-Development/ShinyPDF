@@ -215,6 +215,19 @@ namespace ShinyPDF.UnitTests
         }
 
         [Test]
+        public void Image_LargerThanMaxImagePixels_FallsBackToAltText()
+        {
+            var root = Render("![big](big.png)", x =>
+            {
+                x.ImageResolver = _ => CreatePng(4, 4);
+                x.MaxImagePixels = 15;
+            });
+
+            Assert.That(Spans(root).Single().Text, Is.EqualTo("big"));
+            Assert.That(Descendants(root).OfType<Image>(), Is.Empty);
+        }
+
+        [Test]
         public void Image_InsideLink_IsClickable()
         {
             var root = Render("[![logo](logo.png)](https://example.com)", x => x.ImageResolver = _ => CreatePng(4, 4));
@@ -394,7 +407,7 @@ namespace ShinyPDF.UnitTests
         public void SyntaxLanguage_TokensCoverTheWholeCode()
         {
             const string code = "a /* b */ \"c\" 1 // d\nx";
-            var tokens = SyntaxLanguages.JavaScript().Tokenize(code).ToList();
+            var tokens = SyntaxLanguages.JavaScript().Tokenize(code, DefaultTimeout).ToList();
 
             Assert.That(string.Concat(tokens.Select(x => x.Text)), Is.EqualTo(code));
             Assert.That(tokens.Where(x => x.Kind == SyntaxTokenKind.Comment).Select(x => x.Text), Is.EqualTo(new[] { "/* b */", "// d" }));
@@ -403,7 +416,7 @@ namespace ShinyPDF.UnitTests
         [Test]
         public void SyntaxLanguage_StringsWinOverCommentMarkersInside()
         {
-            var tokens = SyntaxLanguages.Python().Tokenize("x = \"# not a comment\"").ToList();
+            var tokens = SyntaxLanguages.Python().Tokenize("x = \"# not a comment\"", DefaultTimeout).ToList();
 
             Assert.That(tokens.Single(x => x.Kind != null), Is.EqualTo(((SyntaxTokenKind?)SyntaxTokenKind.String, "\"# not a comment\"")));
         }
@@ -422,7 +435,7 @@ namespace ShinyPDF.UnitTests
         public void BuiltInLanguages_HighlightSomethingAndKeepAllText(string name, string code)
         {
             var language = SyntaxLanguages.All().Single(x => x.HasName(name));
-            var tokens = language.Tokenize(code).ToList();
+            var tokens = language.Tokenize(code, DefaultTimeout).ToList();
 
             Assert.That(string.Concat(tokens.Select(x => x.Text)), Is.EqualTo(code));
             Assert.That(tokens.Count(x => x.Kind != null), Is.GreaterThanOrEqualTo(2));
@@ -432,11 +445,35 @@ namespace ShinyPDF.UnitTests
         public void Shell_HighlightsWholeUnquotedVariableNames()
         {
             var variables = SyntaxLanguages.Shell()
-                .Tokenize("echo $HOME ${PATH} $1 $?")
+                .Tokenize("echo $HOME ${PATH} $1 $?", DefaultTimeout)
                 .Where(x => x.Kind == SyntaxTokenKind.Attribute)
                 .Select(x => x.Text);
 
             Assert.That(variables, Is.EqualTo(new[] { "$HOME", "${PATH}", "$1", "$?" }));
+        }
+
+        [Test]
+        public void SyntaxLanguage_SlowPattern_FallsBackToPlainTextWithinTimeout()
+        {
+            var language = new SyntaxLanguage("slow").Keywords("ok").Rule(SyntaxTokenKind.String, "(a+)+b");
+            var code = "ok " + new string('a', 40) + "!";
+
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var tokens = language.Tokenize(code, TimeSpan.FromMilliseconds(50)).ToList();
+
+            Assert.That(stopwatch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(5)));
+            Assert.That(string.Concat(tokens.Select(x => x.Text)), Is.EqualTo(code));
+            Assert.That(tokens.First(), Is.EqualTo(((SyntaxTokenKind?)SyntaxTokenKind.Keyword, "ok")));
+        }
+
+        [Test]
+        public void SyntaxLanguage_UnterminatedBlockComment_RunsToTheEnd()
+        {
+            var code = string.Concat(Enumerable.Repeat("/*a ", 20_000));
+
+            var tokens = SyntaxLanguages.CSharp().Tokenize(code, DefaultTimeout).ToList();
+
+            Assert.That(tokens.Single(), Is.EqualTo(((SyntaxTokenKind?)SyntaxTokenKind.Comment, code)));
         }
 
         [Test]
@@ -517,6 +554,8 @@ namespace ShinyPDF.UnitTests
             container.Markdown(markdown, configure);
             return container;
         }
+
+        private static readonly TimeSpan DefaultTimeout = new MarkdownOptions().SyntaxHighlightingTimeout;
 
         private static byte[] CreatePng(int width, int height, bool noisy = false)
         {

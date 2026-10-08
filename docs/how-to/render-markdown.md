@@ -108,7 +108,7 @@ options.ImageResolver = url =>
 };
 ```
 
-Images are shown at their natural size (one pixel per point) and scaled down to the available width and to `options.MaxImageHeight` (500 points by default; keep it below the page content height). An image inside a link (`[![logo](logo.png)](https://...)`) is clickable. PNG, JPEG, WebP, GIF and BMP are supported; SVG is not. Images that cannot be decoded fall back to their alternative text.
+Images are shown at their natural size (one pixel per point) and scaled down to the available width and to `options.MaxImageHeight` (500 points by default; keep it below the page content height). An image inside a link (`[![logo](logo.png)](https://...)`) is clickable. Images larger than `options.MaxImagePixels` (40 megapixels by default) are not decoded and show their alternative text, so a small compressed file cannot claim gigabytes of memory. PNG, JPEG, WebP, GIF and BMP are supported; SVG is not. Images that cannot be decoded fall back to their alternative text.
 
 ## Syntax highlighting
 
@@ -138,7 +138,7 @@ options.CodeLanguages.Add(new SyntaxLanguage("kotlin", "kt")
     .Types("Int", "String", "Boolean"));
 ```
 
-The built-in languages are also available as templates in `SyntaxLanguages`: `SyntaxLanguages.CSharp()` returns a new instance you can extend with more rules. Change colors with `options.SyntaxColors[SyntaxTokenKind.Keyword] = "#0000FF"`. To turn highlighting off, call `options.CodeLanguages.Clear()`.
+The built-in languages are also available as templates in `SyntaxLanguages`: `SyntaxLanguages.CSharp()` returns a new instance you can extend with more rules. Change colors with `options.SyntaxColors[SyntaxTokenKind.Keyword] = "#0000FF"`. To turn highlighting off, call `options.CodeLanguages.Clear()`. Highlighting one code block may take at most `options.SyntaxHighlightingTimeout` (500 ms by default); after that, the rest of the block is shown without colors. This protects against slow custom patterns and hostile input.
 
 ## Diagrams and formulas
 

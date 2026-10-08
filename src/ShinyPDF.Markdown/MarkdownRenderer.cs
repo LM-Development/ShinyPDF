@@ -242,7 +242,7 @@ namespace ShinyPDF.Markdown
                 .FontSize(Options.BaseFontSize * 0.9f);
 
             var syntax = language.Length == 0 ? null : Options.CodeLanguages.LastOrDefault(x => x.HasName(language));
-            var tokens = syntax?.Tokenize(content) ?? new[] { ((SyntaxTokenKind?)null, content) };
+            var tokens = syntax?.Tokenize(content, Options.SyntaxHighlightingTimeout) ?? new[] { ((SyntaxTokenKind?)null, content) };
 
             container
                 .Background(Options.CodeBackgroundColor)
@@ -412,7 +412,7 @@ namespace ShinyPDF.Markdown
         private void ComposeImage(TextDescriptor text, LinkInline image, TextStyle style, string? url)
         {
             var data = LoadImage(image.Url);
-            var size = data == null ? null : DecodeImageSize(data);
+            var size = data == null ? null : DecodeImageSize(data, Options.MaxImagePixels);
 
             if (data == null || size == null)
             {
@@ -462,12 +462,16 @@ namespace ShinyPDF.Markdown
             }
         }
 
-        private static (float Width, float Height)? DecodeImageSize(byte[] data)
+        private static (float Width, float Height)? DecodeImageSize(byte[] data, long maxPixels)
         {
             using var stream = new SKMemoryStream(data);
             using var codec = SKCodec.Create(stream);
 
-            if (codec == null || codec.Info.Width == 0 || codec.Info.Height == 0)
+            if (codec == null || codec.Info.Width <= 0 || codec.Info.Height <= 0)
+                return null;
+
+            // check the size from the header before allocating; long arithmetic cannot overflow for int dimensions
+            if ((long)codec.Info.Width * codec.Info.Height > maxPixels)
                 return null;
 
             // decode all pixels: a valid header alone does not guarantee the image is complete

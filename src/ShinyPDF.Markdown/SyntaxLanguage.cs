@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -16,6 +17,7 @@ namespace ShinyPDF.Markdown
 
         private readonly List<(SyntaxTokenKind Kind, string Pattern)> Rules = new();
         private Regex? CompiledRules;
+        private TimeSpan CompiledTimeout;
 
         /// <param name="names">Name and aliases used after the opening fence, e.g. "csharp", "cs". Matched case-insensitively.</param>
         public SyntaxLanguage(params string[] names)
@@ -60,8 +62,11 @@ namespace ShinyPDF.Markdown
             return Names.Any(x => string.Equals(x, name, StringComparison.OrdinalIgnoreCase));
         }
 
-        /// <summary>Splits code into consecutive pieces; pieces without a kind are plain code.</summary>
-        internal IEnumerable<(SyntaxTokenKind? Kind, string Text)> Tokenize(string code)
+        /// <summary>
+        /// Splits code into consecutive pieces; pieces without a kind are plain code.
+        /// When highlighting takes longer than <paramref name="timeout"/> in total, the remaining code is returned as plain text.
+        /// </summary>
+        internal IEnumerable<(SyntaxTokenKind? Kind, string Text)> Tokenize(string code, TimeSpan timeout)
         {
             if (Rules.Count == 0)
             {
@@ -69,29 +74,58 @@ namespace ShinyPDF.Markdown
                 yield break;
             }
 
-            var regex = CompiledRules ??= Compile();
+            var regex = GetRegex(timeout);
+            var stopwatch = Stopwatch.StartNew();
             var position = 0;
+            var searchFrom = 0;
 
-            foreach (Match match in regex.Matches(code))
+            while (searchFrom <= code.Length && stopwatch.Elapsed < timeout)
             {
+                var match = FindMatch(regex, code, searchFrom);
+
+                if (match == null)
+                    break;
+
                 if (match.Length == 0)
+                {
+                    searchFrom = match.Index + 1;
                     continue;
+                }
 
                 if (match.Index > position)
                     yield return (null, code[position..match.Index]);
 
                 yield return (GetKind(match), match.Value);
-                position = match.Index + match.Length;
+                position = searchFrom = match.Index + match.Length;
             }
 
             if (position < code.Length)
                 yield return (null, code[position..]);
         }
 
-        private Regex Compile()
+        private static Match? FindMatch(Regex regex, string code, int searchFrom)
         {
+            try
+            {
+                var match = regex.Match(code, searchFrom);
+                return match.Success ? match : null;
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                // slow pattern or hostile input: keep the rest as plain code
+                return null;
+            }
+        }
+
+        private Regex GetRegex(TimeSpan timeout)
+        {
+            if (CompiledRules != null && CompiledTimeout == timeout)
+                return CompiledRules;
+
             var alternatives = Rules.Select((rule, index) => $"(?<{GroupPrefix}{index}>{rule.Pattern})");
-            return new Regex(string.Join("|", alternatives), RegexOptions.Multiline | RegexOptions.CultureInvariant);
+            CompiledRules = new Regex(string.Join("|", alternatives), RegexOptions.Multiline | RegexOptions.CultureInvariant, timeout);
+            CompiledTimeout = timeout;
+            return CompiledRules;
         }
 
         private SyntaxTokenKind GetKind(Match match)

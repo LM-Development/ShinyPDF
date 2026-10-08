@@ -9,7 +9,7 @@ namespace ShinyPDF.Markdown
     public static class SyntaxLanguages
     {
         private const string LineComment = @"//.*";
-        private const string BlockComment = @"/\*[\s\S]*?\*/";
+        private const string BlockComment = @"/\*[\s\S]*?(?:\*/|\z)";
         private const string HashComment = @"(?<![^\s])#.*";
         private const string DoubleQuoted = @"""(?:\\.|[^""\\\n])*""";
         private const string SingleQuoted = @"'(?:\\.|[^'\\\n])*'";
@@ -35,7 +35,7 @@ namespace ShinyPDF.Markdown
             return new SyntaxLanguage("csharp", "cs", "c#")
                 .Rule(SyntaxTokenKind.Comment, LineComment)
                 .Rule(SyntaxTokenKind.Comment, BlockComment)
-                .Rule(SyntaxTokenKind.String, @"\$*""""""[\s\S]*?""""""")
+                .Rule(SyntaxTokenKind.String, @"\$*""""""[\s\S]*?(?:""""""|\z)")
                 .Rule(SyntaxTokenKind.String, @"(?:\$@|@\$|@)""(?:""""|[^""])*""")
                 .Rule(SyntaxTokenKind.String, @"\$?" + DoubleQuoted)
                 .Rule(SyntaxTokenKind.String, @"'(?:\\.|[^'\\\n])'")
@@ -98,8 +98,8 @@ namespace ShinyPDF.Markdown
         public static SyntaxLanguage Xml()
         {
             return new SyntaxLanguage("xml", "html", "xhtml", "svg", "xaml", "csproj", "razor")
-                .Rule(SyntaxTokenKind.Comment, @"<!--[\s\S]*?-->")
-                .Rule(SyntaxTokenKind.Keyword, @"<!\[CDATA\[[\s\S]*?\]\]>|<[!?][^>]*>")
+                .Rule(SyntaxTokenKind.Comment, @"<!--[\s\S]*?(?:-->|\z)")
+                .Rule(SyntaxTokenKind.Keyword, @"<!\[CDATA\[[\s\S]*?(?:\]\]>|\z)|<[!?][^>]*>")
                 .Rule(SyntaxTokenKind.Tag, @"</?[\w:.\-]+|/?>")
                 .Rule(SyntaxTokenKind.Attribute, @"(?<=\s)[\w:.\-]+(?=\s*=\s*[""'])")
                 .Rule(SyntaxTokenKind.String, @"(?<==\s*)(?:""[^""]*""|'[^']*')");
@@ -145,7 +145,7 @@ namespace ShinyPDF.Markdown
         {
             return new SyntaxLanguage("python", "py")
                 .Rule(SyntaxTokenKind.Comment, @"#.*")
-                .Rule(SyntaxTokenKind.String, @"(?i:[rbuf]{0,2})(?:""""""[\s\S]*?""""""|'''[\s\S]*?''')")
+                .Rule(SyntaxTokenKind.String, @"(?i:[rbuf]{0,2})(?:""""""[\s\S]*?(?:""""""|\z)|'''[\s\S]*?(?:'''|\z))")
                 .Rule(SyntaxTokenKind.String, @"(?i:[rbuf]{0,2})(?:" + DoubleQuoted + "|" + SingleQuoted + ")")
                 .Rule(SyntaxTokenKind.Keyword, @"^[ \t]*@[\w.]+")
                 .Rule(SyntaxTokenKind.Number, Number)
@@ -172,9 +172,9 @@ namespace ShinyPDF.Markdown
         public static SyntaxLanguage PowerShell()
         {
             return new SyntaxLanguage("powershell", "pwsh", "ps1", "ps")
-                .Rule(SyntaxTokenKind.Comment, @"<#[\s\S]*?#>")
+                .Rule(SyntaxTokenKind.Comment, @"<#[\s\S]*?(?:#>|\z)")
                 .Rule(SyntaxTokenKind.Comment, HashComment)
-                .Rule(SyntaxTokenKind.String, @"@""[\s\S]*?\n""@|@'[\s\S]*?\n'@")
+                .Rule(SyntaxTokenKind.String, @"@""[\s\S]*?(?:\n""@|\z)|@'[\s\S]*?(?:\n'@|\z)")
                 .Rule(SyntaxTokenKind.String, @"""(?:`.|[^""`])*""")
                 .Rule(SyntaxTokenKind.String, @"'(?:''|[^'])*'")
                 .Rule(SyntaxTokenKind.Attribute, @"\$(?:\{[^}]*\}|[\w:]+)")

@@ -45,6 +45,12 @@ namespace ShinyPDF.Markdown
         /// </summary>
         public float MaxImageHeight { get; set; } = 500;
 
+        /// <summary>
+        /// Largest image (width x height in pixels) that is decoded. Larger images show their alternative text,
+        /// so a small compressed image cannot claim gigabytes of memory. Default: 40 megapixels.
+        /// </summary>
+        public long MaxImagePixels { get; set; } = 40_000_000;
+
         /// <summary>Border and fill color of task list checkboxes.</summary>
         public string CheckboxColor { get; set; } = Colors.Grey.Darken2;
 
@@ -67,6 +73,12 @@ namespace ShinyPDF.Markdown
         /// When several languages share a name, the one added last wins.
         /// </summary>
         public List<SyntaxLanguage> CodeLanguages { get; } = SyntaxLanguages.All().ToList();
+
+        /// <summary>
+        /// Time budget for highlighting one code block. When it is exceeded (slow custom patterns or hostile input),
+        /// the rest of the block is shown without highlighting.
+        /// </summary>
+        public TimeSpan SyntaxHighlightingTimeout { get; set; } = TimeSpan.FromMilliseconds(500);
 
         /// <summary>Colors of highlighted code. Kinds without a color use the regular text color.</summary>
         public Dictionary<SyntaxTokenKind, string> SyntaxColors { get; } = new()
